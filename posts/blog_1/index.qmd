@@ -60,7 +60,244 @@ In here, I used the \$\color{red}{\text{Perplexity parameter as 40}} authors alr
 
 Here is the output..🤗
 
-![](generate_results.png)
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(plotly)
+library(patchwork)
+library(Rtsne)
+
+data <- read_csv("/Users/jpiy0001/Desktop/PhD Monash research files/Meetings/Meeting_24/HARPS_GTO/Process_data/HARPS_data_by_author.csv")
+
+data <- data %>% mutate(vXg_minus = vXg * (-1),
+                YMg = YFe - MgFe,
+                AlMg = AlFe - MgFe,
+                YAl = YFe - AlFe,
+                SrBa = SrFe - BaFe,
+                ZrBa = ZrIIFe - BaFe,
+                CFe = `[C/H]_SA17` - feh,
+                CO = `[C/H]_SA17` - `[O/H]_6158_BdL15`,
+                sqrt_Vxg_Vzg = sqrt(vXg**2. + vZg**2. ),
+                MgY = MgFe - YFe,
+                BaY = BaFe - YFe,
+                Rg_Rc = Rg - Rc,
+                Rc_rb = Rc - rb,
+                sqrt_errY_errMg = sqrt(errY**2. + errMg**2.),
+                sqrt_errAl_errMg = sqrt(errAl**2. + errMg**2.),
+                sqrt_errY_errAl = sqrt(errY**2. + errAl**2.),
+                sqrt_errSr_errBa = sqrt(errSr**2. + errBa**2.),
+                sqrt_errZrII_errBa = sqrt(errZrII**2. + errBa**2.),
+                sqrt_errCH_errfeh = sqrt(`e_[C/H]_SA17`**2. + erfeh**2.),
+                sqrt_errCH_errOH = sqrt(`e_[C/H]_SA17`**2. + `e_[O/H]_6158_BdL15`**2.),
+                sqrt_vXg_sig_vZg_sig = sqrt(vXg_sig**2. + vZg_sig**2.),
+                sqrt_errY_errBa = sqrt(errY**2. + errBa**2.),
+                sqrt_Rg_sig_Rc_sig = sqrt(Rg_sig**2. + Rc_sig**2.),
+                sqrt_rb_err_Rc_sig = sqrt(rb_err**2. + Rc_sig**2.),
+                abs_JR_st_U_JR_st_L = 0.5*abs(JR_st_U-JR_st_L),
+                abs_JZ_st_U_JZ_st_L = 0.5*abs(JZ_st_U-JZ_st_L))
+
+## Assign outer cluster names
+data <- data %>%
+mutate(outer_cluster_teffcut40 = ifelse(tsne_class_teffcut40 == "thin", "",
+                             ifelse(tsne_class_teffcut40 == "thick1", "",
+                             ifelse(tsne_class_teffcut40 == "thick2", "",
+                             ifelse(tsne_class_teffcut40 == "thick3", "",
+                             ifelse(tsne_class_teffcut40 == "thick4", "",
+                             ifelse(tsne_class_teffcut40 == "mpthin", "",
+                             ifelse(tsne_class_teffcut40 == "mpthintrans", "Transition group",
+                             ifelse(tsne_class_teffcut40 == "smr", "",
+                             ifelse(tsne_class_teffcut40 == "t4trans", "",
+                             ifelse(tsne_class_teffcut40 == "youngthin", "Young local disc",
+                             ifelse(tsne_class_teffcut40 == "debris1", "",
+                             ifelse(tsne_class_teffcut40 == "debris2", "",
+                             ifelse(tsne_class_teffcut40 == "debris3", "[s/Fe]-enhanced",
+                             ifelse(tsne_class_teffcut40 == "debris4", "",
+                             ifelse(tsne_class_teffcut40 == "debris5", "",
+                             ifelse(tsne_class_teffcut40 == "smr2", "",
+                             ifelse(tsne_class_teffcut40 == "t2trans1", "Debris candidate",
+                             ifelse(tsne_class_teffcut40 == "highTi", "Extreme-Ti star",
+                             ifelse(tsne_class_teffcut40 == "lowMg", "Low-[Mg/Fe] star",
+                             ifelse(tsne_class_teffcut40 == "highAlMg?", "High-[Al/Mg] star",
+
+                                     "")))))))))))))))))))))
+
+data <- data %>%
+  mutate(outer_cluster_teffcut40_mc = ifelse(tsne_class_mc == "thin", "Thin Disc",
+                                   ifelse(tsne_class_mc == "thick1", "Thick Disc I",
+                                                 ifelse(tsne_class_mc == "thick2", "Thick Disc II",
+                                                        ifelse(tsne_class_mc == "thick3", "Inner Disc I",
+                                                               ifelse(tsne_class_mc == "thick4", "Inner Disc II",
+                                                                      ifelse(tsne_class_mc == "mpthin", "Outer Thin Disc",
+                                                                             ifelse(tsne_class_mc == "smr", "SMR",
+                                                                                    ifelse(tsne_class_mc == "t4trans", "Inner Disc III",
+                                                                                           ifelse(tsne_class_mc == "debris1", "",
+                                                                                                  ifelse(tsne_class_mc == "debris2", "",
+                                                                                                         ifelse(tsne_class_mc == "debris3", "Satellite debris",
+                                                                                                                ifelse(tsne_class_mc == "debris4", "",
+                                                                                                                       ifelse(tsne_class_mc == "debris5?", "",
+                                                                                                                              ifelse(tsne_class_mc == "t2trans1", "TII/III",
+                                                                                                                                     ifelse(tsne_class_mc == "t2trans2", "",
+                                                                                                                                            ifelse(tsne_class_mc == "highTi", "Extreme-Ti star",
+                                                                                                                                                   ifelse(tsne_class_mc == "thicklow", "Lowest-[Fe/H] star",
+
+
+                                                                                                                                                                               ""))))))))))))))))))
+
+
+data <- data %>%
+  mutate(outer_cluster_teffcut40_errlim_mc = ifelse(tsne_class_errlim_mc == "thin", "Thin Disc",
+                                                    ifelse(tsne_class_errlim_mc == "thick1", "Thick Disc",
+                                                           ifelse(tsne_class_teffcut40 == "thick2", "",
+                                                                  ifelse(tsne_class_teffcut40 == "thick3", "",
+                                                                         ifelse(tsne_class_teffcut40 == "thick4", "Metal-rich Thick Disc",
+                                                                                ifelse(tsne_class_teffcut40 == "mpthin", "Metal-poor Thin Disc",
+                                                                                       ifelse(tsne_class_teffcut40 == "youngthin", "Young Local Disc",
+                                                                                              ifelse(tsne_class_teffcut40 == "smr", "SMR",
+                                                                                                     ifelse(tsne_class_teffcut40 == "t4trans", "Transition",
+
+                                                                                                                   ifelse(tsne_class_teffcut40 == "debris1", "Debris",
+                                                                                                                          ifelse(tsne_class_teffcut40 == "debris2", "",
+                                                                                                                                 ifelse(tsne_class_teffcut40 == "debris3", "",
+                                                                                                                                        ifelse(tsne_class_teffcut40 == "debris4", "",
+                                                                                                                                               ifelse(tsne_class_teffcut40 == "debris5?", "",
+                                                                                                                                                      ifelse(tsne_class_teffcut40 == "t2trans1", "",
+                                                                                                                                                             ifelse(tsne_class_teffcut40 == "t2trans2", "",
+                                                                                                                                                                    ifelse(tsne_class_teffcut40 == "highTi", "",
+                                                                                                                                                                           ifelse(tsne_class_teffcut40 == "t2trans3", "",
+                                                                                                                                                                                  ifelse(tsne_class_teffcut40 == "smr2", "",
+                                                                                                                                                                                         ifelse(tsne_class_teffcut40 == "lowMg", "",
+
+                                                                                                                                                                                         "")))))))))))))))))))))
+
+
+
+
+
+data <- data %>%
+  mutate(outer_cluster_teffcut40_simple = ifelse(tsne_class_teffcut40_simple == "thin", "Thin Disc",
+                                          ifelse(tsne_class_teffcut40_simple == "thick1", "Thick Disc I",
+                                                 ifelse(tsne_class_teffcut40_simple == "thick2", "Thick Disc II",
+                                                        ifelse(tsne_class_teffcut40_simple == "thick3", "Thick Disc III",
+
+                                                                      ifelse(tsne_class_teffcut40_simple == "mpthin", "Metal-poor thin disc",
+
+                                                                                    ifelse(tsne_class_teffcut40_simple == "smr", "SMR",
+                                                                                           ifelse(tsne_class_teffcut40_simple == "t1trans", "Transition I",
+
+                                                                                                         ifelse(tsne_class_teffcut40_simple == "debris", "Satellite debris",
+                                                                                                                ifelse(tsne_class_teffcut40_simple == "highAlMg", "High-[Al/Mg]",
+                                                                                                                       ifelse(tsne_class_teffcut40_simple == "t3trans", "Transition III",
+                                                                                                                              ifelse(tsne_class_teffcut40 == "highTioutlier", "Extreme-Ti star",
+                                                                                                                                     ifelse(tsne_class_teffcut40_simple == "lowalphaoutlier", "Low-[Mg/Fe] star",
+
+
+                                                                                                                                                                               "")))))))))))))
+
+
+
+
+
+
+
+### Actual result generation
+
+actual_tsne <- data %>% select("Star","X_tsne_teffcut40", "Y_tsne_teffcut40", "tsne_class_teffcut40", "outer_cluster_teffcut40",
+                "tsne_class_teffcut40_simple", "outer_cluster_teffcut40_simple","X_tsne_teffcut40_errlim_mc", "Y_tsne_teffcut40_errlim_mc",
+                "tsne_class_errlim_mc","outer_cluster_teffcut40_errlim_mc", "X_tsne_teffcut40_nofeh_mc", "Y_tsne_teffcut40_nofeh_mc",
+                "X_tsne_teffcut40_mc", "Y_tsne_teffcut40_mc", "tsne_class_mc", "outer_cluster_teffcut40_mc")
+
+actual_tsne1 <- actual_tsne %>% filter(outer_cluster_teffcut40 != "")#
+
+actual_tsne1$cluster <- actual_tsne1$outer_cluster_teffcut40
+
+actual_tsne2 <- actual_tsne %>% filter(outer_cluster_teffcut40 == "")
+
+actual_tsne3 <- actual_tsne2 %>%  filter(outer_cluster_teffcut40_mc != "")
+
+actual_tsne3 <- actual_tsne3 %>%
+  mutate(outer_cluster_teffcut40_mc = ifelse(outer_cluster_teffcut40_mc == "SMR", "Thin Disc",
+                                                    ifelse(outer_cluster_teffcut40_mc == "Lowest-[Fe/H] star", "Thick Disc I", outer_cluster_teffcut40_mc))) #
+
+actual_tsne3$cluster <- actual_tsne3$outer_cluster_teffcut40_mc
+
+
+stars <- c(actual_tsne1$Star, actual_tsne3$Star)
+
+actual_tsne4 <- actual_tsne[-which(actual_tsne$Star %in% stars),]
+
+actual_tsne5 <- actual_tsne4 %>% filter(outer_cluster_teffcut40_simple != "") #
+
+actual_tsne5$cluster <- actual_tsne5$outer_cluster_teffcut40_simple
+
+actual_tsne6 <- actual_tsne4 %>% filter(outer_cluster_teffcut40_simple == "")
+
+actual_tsne6$cluster <- rep("Debris candidate", nrow(actual_tsne6)) #
+
+data_with_cluster_label <- bind_rows(actual_tsne1, actual_tsne3, actual_tsne5, actual_tsne6)
+
+
+tSNE_plot_actual <- data_with_cluster_label %>%
+  ggplot(aes(x = X_tsne_teffcut40, y = Y_tsne_teffcut40, color = cluster)) +
+  geom_point(aes(shape=cluster, color=cluster)) +
+  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) + ggtitle("tSNE plot by author") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") 
+```
+
+```{r}
+#| echo: false
+#| #| warning: false
+#| message: false
+
+data1 <- read_csv("/Users/jpiy0001/Desktop/PhD Monash research files/Meetings/Meeting_24/HARPS_GTO/Process_data/HARPS_GTO_processed_with_cluster_label.csv")
+
+
+selected_columns1 <- colnames(data1)[grepl("Mg|Al|Si|Ca|TiI|fe|Cu|Zn|Sr|Y|ZrII|Ce|Ba",colnames(data1))]
+
+selected_columns_new1 <- selected_columns1[! selected_columns1 %in% c('Y_tsne_teffcut40', 'Y_tsne_teffcut40_old', 'Y_tsne_teffcut40_errlim_mc', "Y_tsne_teffcut40_errlim_mc_old", "Y_tsne_teffcut40_nofeh_mc", "Y_tsne_teffcut40_mc", "Yg_sig", "vYg", "vYg_sig", "[Fe/H]_C11", "Yg", "nCu", "nZn" , "nSr", "nY", "nZrII", "nBa", "nCe", "nAl", "nMg", "nSi", "nCa", "[Fe/H]_T13")]
+
+selected_columns_new1 <- selected_columns_new1 %>% append("cluster") #"tsne_class_teffcut40",
+
+
+
+#
+selected_columns_new1 <- selected_columns_new1[selected_columns_new1 %in% c("feh", "AlMg", "TiIFe", "SiFe", "MgFe", "ZnFe", "CuFe", "YMg", "BaFe", "CeFe", "ZrBa", "SrBa", "cluster", "ZrIIFe", "CaFe", "AlFe", "YFe", "ZrFe", "SrFe")] ###Some what correct
+#
+
+
+
+
+df <- data1 %>% select(all_of(selected_columns_new1))
+
+
+
+set.seed(20210091)
+tSNE_fit <- df %>%
+  select(where(is.numeric)) %>%
+  #Rtsne(perplexity = 40, pca = FALSE, pca_center = FALSE, normalize = FALSE)
+Rtsne(perplexity = 40)
+
+#df_na_omit <- df %>% na.omit()
+
+tSNE_df <- tSNE_fit$Y %>%
+  as.data.frame()  %>%
+  mutate(ID=row_number())
+
+names(tSNE_df)[1:2] <- c("tSNE1", "tSNE2")
+
+tSNE_df_plot <- tSNE_df %>%
+  ggplot(aes(x = tSNE2,
+             y = tSNE1,
+             color = df$cluster)) +
+  geom_point(aes(shape=df$cluster, color=df$cluster)) +
+  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) +  ggtitle("tSNE plot by us") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") +
+  theme(legend.position = "none") 
+
+
+lemon::grid_arrange_shared_legend(tSNE_plot_actual, tSNE_df_plot, ncol = 2, position='bottom')
+```
 
 ## Acknowledge
 

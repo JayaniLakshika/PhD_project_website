@@ -1,45 +1,10 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Team",
-    "section": "",
-    "text": "I am a first year PhD student in Department of Econometrics and Business Statistics at the Monash University, Australia. This website contains the findings of my PhD research project.\nMy supervisors are:\n\nProfessor Dianne Cook\nDr. Michael Lydeamore\nDr. Paul Harrison\nDr. Thiyanga S. Talagala"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "Blogs.html",
-    "href": "Blogs.html",
-    "title": "Posts",
-    "section": "",
-    "text": "Do the tSNE results can reproducible?\n\n\n\n\n\n\n\ntSNE\n\n\n\n\n\n\n\n\n\n\n\nFeb 5, 2023\n\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "posts/blog_1/index.html",
     "href": "posts/blog_1/index.html",
     "title": "Do the tSNE results can reproducible?",
     "section": "",
     "text": "If you are an R user who is struggling to access HARPS GTO sample dataset and who have the question that Can’t we reproduce the t-distributed stochastic neighbor embedding (tSNE) results that already exist? in their mind, this blog is for you. Today, I will introduce my workflow of accessing processed data from original data, downloading the processed data, data processing to initialize cluster labels, and show my surprising findings on reproducing tSNE results.\nThis example is relevant to the paper, “Dissecting stellar chemical abundance space with t-SNE” (Anders et al. 2018, Astronomy & Astrophysics 619, A125).\nFor simplicity, I added all the codes separately and linked them through the process.\nPlease note that, you will need to \\(\\color{green}{\\text{install python library}}\\) called open_data which you can find in open_data.py as the initial step."
-  },
-  {
-    "objectID": "posts/blog_1/index.html#data-proceesing-steps-already-followed-by-open_data-library",
-    "href": "posts/blog_1/index.html#data-proceesing-steps-already-followed-by-open_data-library",
-    "title": "Do the tSNE results can reproducible?",
-    "section": "Data proceesing steps already followed by open_data library",
-    "text": "Data proceesing steps already followed by open_data library\nThe original data can be find in the GitHUb repository of the authors as DelgadoMena2017.fits."
-  },
-  {
-    "objectID": "posts/blog_1/index.html#our-workflow",
-    "href": "posts/blog_1/index.html#our-workflow",
-    "title": "Do the tSNE results can reproducible?",
-    "section": "Our workflow",
-    "text": "Our workflow\nLet’s begin… 🤓\n\nTo download the processed data as a csv file and save locally, you need to run download_original.py,\nRun this code to further process data as indicated in original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,\nRun this code to conduct our own t-SNE results.\n\nIn here, I used the $ authors already mentioned that in the paper.\nHere is the output..🤗"
   },
   {
     "objectID": "posts/blog_1/index.html#data-processing-steps-already-followed-by-open_data-library",
@@ -49,10 +14,31 @@
     "text": "Data processing steps already followed by open_data library\nThe original data can be find in the GitHUb repository of the authors as DelgadoMena2017.fits which includes some existing cluster labels and abundance determination for \\(\\color{blue}{\\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}\\). This file contains details regrading \\(\\color{red}{\\text{1059}}\\) stars.\nThen, how we get only \\(\\color{red}{\\text{530}}\\) stars? 🤔\nLet’s investigate…\nAccording to the authors, the sample needed to be analyzed in a more restricted temperature range to obtain reliable tSNE abundance maps. The reason is that specific abundance trends seem to dominate underlying temperature trends. Therefore,\n\nchoose an effective temperature range of \\(\\color{brown}{5300 \\text{ K} < T_{eff} < 6000 \\text{ K}}\\).\n\nIn this step, only \\(\\color{green}{539}\\) stars were satisfied. Next,\n\nexclude stars with \\(\\color{brown}{\\text{log } g_{HIP}} < 3\\) which remove \\(\\color{green}{\\text{one}}\\) star.\n\nThen,\n\nselect successful abundance determination for \\(\\color{brown}{\\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}\\) which use as input for tSNE.\n\nOnly \\(\\color{green}{533}\\) stars are remained because others contain missing values. Furthermore,\n\nto compensate the fact that tSNE does not take into account individual (heteroscedastic) uncertainties in the data, the authors followed the approach of Hogg et al. (2016) and rescaled each abundance by the median uncertainty in that element, assuming an abundance uncertainty floor of 0.03 dex. Additionally,\nremove stars which did not coverge by using the age determination code, StarHose code.\n\nThe \\(\\color{green}{3}\\) stars are discarded.\nIn our final sample, there is only \\(\\color{green}{530}\\) stars. 👏\nNote: Do not need to consider the above steps because open_data package already done it for us."
   },
   {
+    "objectID": "posts/blog_1/index.html#our-workflow",
+    "href": "posts/blog_1/index.html#our-workflow",
+    "title": "Do the tSNE results can reproducible?",
+    "section": "Our workflow",
+    "text": "Our workflow\nLet’s begin… 🤓\n\nTo download the processed data as a csv file and save locally, you need to run download_original.py,\nRun this code to further process data as indicated in original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,\nRun this code to conduct our own t-SNE results.\n\nIn here, I used the $ authors already mentioned that in the paper.\nHere is the output..🤗"
+  },
+  {
     "objectID": "posts/blog_1/index.html#acknowledge",
     "href": "posts/blog_1/index.html#acknowledge",
     "title": "Do the tSNE results can reproducible?",
     "section": "Acknowledge",
     "text": "Acknowledge\nI am grateful for Dianne Cook who suggested me as an exercise for me."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Team",
+    "section": "",
+    "text": "I am a first year PhD student in Department of Econometrics and Business Statistics at the Monash University, Australia. This website contains the findings of my PhD research project.\nMy supervisors are:\n\nProfessor Dianne Cook\nDr. Michael Lydeamore\nDr. Paul Harrison\nDr. Thiyanga S. Talagala"
+  },
+  {
+    "objectID": "Blogs.html",
+    "href": "Blogs.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Do the tSNE results can reproducible?\n\n\n\n\n\n\n\ntSNE\n\n\n\n\n\n\n\n\n\n\n\nFeb 5, 2023\n\n\n\n\n\n\nNo matching items"
   }
 ]

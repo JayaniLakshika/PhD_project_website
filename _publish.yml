@@ -1,0 +1,4 @@
+- source: project
+  netlify:
+    - id: 098c87dc-199e-4c56-9665-e9f61f7145fd
+      url: 'https://neon-sprinkles-2906c0.netlify.app'
