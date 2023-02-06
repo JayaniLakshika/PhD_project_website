@@ -1,4 +1,16 @@
 ---
-title: ""
+title: "Team"
 ---
+
+I am a first year PhD student in Department of Econometrics and Business Statistics at the [Monash University, Australia](https://www.monash.edu/business/ebs). This website contains the findings of my PhD research project.
+
+My supervisors are:
+
+-   Professor [Dianne Cook](http://www.dicook.org/)
+
+-   Dr. [Michael Lydeamore](https://research.monash.edu/en/persons/michael-lydeamore)
+
+-   Dr. [Paul Harrison](https://research.monash.edu/en/persons/paul-harrison)
+
+-   Dr. [Thiyanga S. Talagala](https://thiyanga.netlify.app/)
 
