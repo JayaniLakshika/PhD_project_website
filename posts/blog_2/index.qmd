@@ -53,7 +53,7 @@ Next, create a Python virtual environment by specifying the Python path.
 reticulate::virtualenv_create(virtualenv_dir, python = python_path)
 ```
 
-Then, you have to install Python dependencies. To do this, you can install the packages by directly specifying them. 
+Then, you have to install Python dependencies. To do this, you can install the packages by directly specifying them.
 
 ```{r}
 #| warning: false
@@ -71,7 +71,7 @@ If not, can use **requirement.txt** which contains all the packages.
 reticulate::virtualenv_install(virtualenv_dir, c("-r", "requirements.txt"))
 ```
 
-Finally, define the Python virtual environment to be used used by `reticulate`. 
+Finally, define the Python virtual environment to be used used by `reticulate`.
 
 ```{r}
 #| warning: false
