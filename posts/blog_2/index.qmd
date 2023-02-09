@@ -1,0 +1,81 @@
+---
+title: "How do we set up a Python virtual environment in the R shinyapps.io server?"
+date: "2023-02-09"
+categories:
+  - Technichal
+editor: visual
+---
+
+Today, I will introduce what are the initial steps that you need to follow when setting up a Python virtual environment in R for the shinyapps.io server.
+
+**Note: You need to have an account in shinyapps.io server. The page can be find in [here](https://www.shinyapps.io/).**
+
+First, you need to create `.Rprofile` file within the directory of your shiny app. Then, initialize a suitable name for the $\color{red}{\text{Python virtual environment}}$.
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+VIRTUALENV_NAME = "new_env"
+```
+
+After that, we need to set environment variables in `.Rprofile` file as follows.
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+Sys.setenv(PYTHON_PATH = 'python3')
+# Installs into default shiny virtualenvs dir
+Sys.setenv(VIRTUALENV_NAME = VIRTUALENV_NAME) 
+Sys.setenv(RETICULATE_PYTHON = paste0('/home/shiny/.virtualenvs/', 
+                                      VIRTUALENV_NAME, '/bin/python'))
+```
+
+The next step is to create the $\color{red}{\text{Python virtual environment}}$. To do that, you can write the following code chunks in `server.R` or your shiny app script.
+
+In there, first of all, you need to get the environment variables.
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+virtualenv_dir = Sys.getenv("VIRTUALENV_NAME")
+python_path = Sys.getenv("PYTHON_PATH")
+```
+
+Next, create a Python virtual environment by specifying the Python path.
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+reticulate::virtualenv_create(virtualenv_dir, python = python_path)
+```
+
+Then, you have to install Python dependencies. To do this, you can install the packages by directly specifying them. 
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+reticulate::virtualenv_install(virtualenv_dir, packages = c("pandas==1.3.5")) 
+```
+
+If not, can use **requirement.txt** which contains all the packages.
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+reticulate::virtualenv_install(virtualenv_dir, c("-r", "requirements.txt"))
+```
+
+Finally, define the Python virtual environment to be used used by `reticulate`. 
+
+```{r}
+#| warning: false
+#| message: false
+#| eval : false
+reticulate::use_virtualenv(virtualenv_dir, required = TRUE)
+```

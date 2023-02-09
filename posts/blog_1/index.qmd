@@ -32,13 +32,13 @@ Only $\color{green}{539}$ stars were satisfied in this step. Next,
 
 Then,
 
-3. select successful abundance determination for $\color{brown}{\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}$ which use as input for tSNE.
+3.  select successful abundance determination for $\color{brown}{\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}$ which use as input for tSNE.
 
 Only $\color{green}{533}$ stars have remained because others contain missing values. Furthermore,
 
-4. to compensate for the fact that tSNE does not take into account individual (heteroscedastic) uncertainties in the data, the authors followed the approach of [Hogg et al. (2016)](https://iopscience.iop.org/article/10.3847/1538-4357/833/2/262/meta) and rescaled each abundance by the median uncertainty in that element, assuming an abundance uncertainty floor of 0.03 dex. Additionally,
+4.  to compensate for the fact that tSNE does not take into account individual (heteroscedastic) uncertainties in the data, the authors followed the approach of [Hogg et al. (2016)](https://iopscience.iop.org/article/10.3847/1538-4357/833/2/262/meta) and rescaled each abundance by the median uncertainty in that element, assuming an abundance uncertainty floor of 0.03 dex. Additionally,
 
-5. remove stars that did not converge by using the age determination code, `StarHose code`.
+5.  remove stars that did not converge by using the age determination code, `StarHose code`.
 
 The $\color{green}{3}$ stars are discarded.
 
@@ -50,9 +50,9 @@ There are only $\color{green}{530}$ stars in our final sample. 👏
 
 Let's begin... 🤓
 
-1. To download the processed data as a CSV file and save it locally, you need to run [download_original.py](https://gist.github.com/JayaniLakshika/4d646a2ad364b1a97ff8aaf050a6d568),
+1.  To download the processed data as a CSV file and save it locally, you need to run [download_original.py](https://gist.github.com/JayaniLakshika/4d646a2ad364b1a97ff8aaf050a6d568),
 
-2. Run [this code](https://gist.github.com/JayaniLakshika/3215e7b7c72e2d2c3424d477ba2fb296) to process data further as indicated in the original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,
+2.  Run [this code](https://gist.github.com/JayaniLakshika/3215e7b7c72e2d2c3424d477ba2fb296) to process data further as indicated in the original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,
 
 3.  Run [this code](https://gist.github.com/JayaniLakshika/b1e440a8432fd33c3587cf16e04cf8f7) to conduct our own t-SNE results.
 
@@ -248,7 +248,7 @@ tSNE_plot_actual <- data_with_cluster_label %>%
 
 ```{r}
 #| echo: false
-#| #| warning: false
+#| warning: false
 #| message: false
 
 data1 <- read_csv("/Users/jpiy0001/Desktop/PhD Monash research files/Meetings/Meeting_24/HARPS_GTO/Process_data/HARPS_GTO_processed_with_cluster_label.csv")
