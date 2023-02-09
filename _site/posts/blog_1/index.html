@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2023-02-05">
 
-<title>PhD research project - Do the tSNE results can reproducible?</title>
+<title>PhD research project - Can the tSNE results be reproducible?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -120,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Do the tSNE results can reproducible?</h1>
+<h1 class="title">Can the tSNE results be reproducible?</h1>
   <div class="quarto-categories">
     <div class="quarto-category">tSNE</div>
   </div>
@@ -144,20 +144,20 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>If you are an R user who is struggling to access <strong>HARPS GTO sample dataset</strong> and who have the question that <strong>Can’t we reproduce the t-distributed stochastic neighbor embedding (tSNE) results that already exist?</strong> in their mind, this blog is for you. Today, I will introduce my workflow of accessing processed data from original data, downloading the processed data, data processing to initialize cluster labels, and show my surprising findings on reproducing tSNE results.</p>
+<p>If you are an R user struggling to access <strong>HARPS GTO sample dataset</strong> and have the question that <strong>Can’t we reproduce the t-distributed stochastic neighbor embedding (tSNE) results that already exist?</strong> In their mind, this blog is for you. Today, I will introduce my workflow of accessing processed data from original data, downloading the processed data, and data processing to initialize cluster labels and show my surprising findings on reproducing tSNE results.</p>
 <p>This example is relevant to the paper, <a href="https://arxiv.org/abs/1803.09341"><strong>“Dissecting stellar chemical abundance space with t-SNE” (Anders et al.&nbsp;2018, Astronomy &amp; Astrophysics 619, A125)</strong></a>.</p>
 <p>For simplicity, I added all the codes separately and linked them through the process.</p>
-<p>Please note that, you will need to <span class="math inline">\(\color{green}{\text{install python library}}\)</span> called <code>open_data</code> which you can find in <a href="https://gist.github.com/JayaniLakshika/602b4867582fd047293700ab720ef472">open_data.py</a> as the initial step.</p>
+<p>Please note that you will need to <span class="math inline">\(\color{green}{\text{install python library}}\)</span> called <code>open_data</code>, which you can find in <a href="https://gist.github.com/JayaniLakshika/602b4867582fd047293700ab720ef472">open_data.py</a> as the initial step.</p>
 <section id="data-processing-steps-already-followed-by-open_data-library" class="level2">
 <h2 class="anchored" data-anchor-id="data-processing-steps-already-followed-by-open_data-library">Data processing steps already followed by open_data library</h2>
-<p>The original data can be find in the GitHUb repository of the authors as <a href="https://github.com/fjaellet/abundance-tsne/blob/master/data/DelgadoMena2017.fits">DelgadoMena2017.fits</a> which includes some existing cluster labels and abundance determination for <span class="math inline">\(\color{blue}{\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}\)</span>. This file contains details regrading <span class="math inline">\(\color{red}{\text{1059}}\)</span> stars.</p>
-<p>Then, how we get only <span class="math inline">\(\color{red}{\text{530}}\)</span> stars? 🤔</p>
+<p>The original data can be found in the GitHub repository of the authors as <a href="https://github.com/fjaellet/abundance-tsne/blob/master/data/DelgadoMena2017.fits">DelgadoMena2017.fits</a>, which includes some existing cluster labels and abundance determination for <span class="math inline">\(\color{blue}{\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}\)</span>. This file contains details regarding <span class="math inline">\(\color{red}{\text{1059}}\)</span> stars.</p>
+<p>Then, how do we get only <span class="math inline">\(\color{red}{\text{530}}\)</span> stars? 🤔</p>
 <p>Let’s investigate…</p>
-<p>According to the authors, the sample needed to be analyzed in a more restricted temperature range to obtain reliable tSNE abundance maps. The reason is that specific abundance trends seem to dominate underlying temperature trends. Therefore,</p>
+<p>According to the authors, the sample needed to be analyzed in a more restricted temperature range to obtain reliable tSNE abundance maps. The reason is that specific abundance trends dominate underlying temperature trends. Therefore,</p>
 <ol type="1">
 <li>choose an effective temperature range of <span class="math inline">\(\color{brown}{5300 \text{ K} &lt; T_{eff} &lt; 6000 \text{ K}}\)</span>.</li>
 </ol>
-<p>In this step, only <span class="math inline">\(\color{green}{539}\)</span> stars were satisfied. Next,</p>
+<p>Only <span class="math inline">\(\color{green}{539}\)</span> stars were satisfied in this step. Next,</p>
 <ol start="2" type="1">
 <li>exclude stars with <span class="math inline">\(\color{brown}{\text{log } g_{HIP}} &lt; 3\)</span> which remove <span class="math inline">\(\color{green}{\text{one}}\)</span> star.</li>
 </ol>
@@ -165,24 +165,24 @@ ul.task-list li input[type="checkbox"] {
 <ol start="3" type="1">
 <li>select successful abundance determination for <span class="math inline">\(\color{brown}{\text{Mg, Al, Si, Ca, TiI, Fe, Cu, Zn, Sr, Y, ZrII, Ce, and Ba}}\)</span> which use as input for tSNE.</li>
 </ol>
-<p>Only <span class="math inline">\(\color{green}{533}\)</span> stars are remained because others contain missing values. Furthermore,</p>
+<p>Only <span class="math inline">\(\color{green}{533}\)</span> stars have remained because others contain missing values. Furthermore,</p>
 <ol start="4" type="1">
-<li><p>to compensate the fact that tSNE does not take into account individual (heteroscedastic) uncertainties in the data, the authors followed the approach of <a href="https://iopscience.iop.org/article/10.3847/1538-4357/833/2/262/meta">Hogg et al.&nbsp;(2016)</a> and rescaled each abundance by the median uncertainty in that element, assuming an abundance uncertainty floor of 0.03 dex. Additionally,</p></li>
-<li><p>remove stars which did not coverge by using the age determination code, <code>StarHose code</code>.</p></li>
+<li><p>to compensate for the fact that tSNE does not take into account individual (heteroscedastic) uncertainties in the data, the authors followed the approach of <a href="https://iopscience.iop.org/article/10.3847/1538-4357/833/2/262/meta">Hogg et al.&nbsp;(2016)</a> and rescaled each abundance by the median uncertainty in that element, assuming an abundance uncertainty floor of 0.03 dex. Additionally,</p></li>
+<li><p>remove stars that did not converge by using the age determination code, <code>StarHose code</code>.</p></li>
 </ol>
 <p>The <span class="math inline">\(\color{green}{3}\)</span> stars are discarded.</p>
-<p>In our final sample, there is only <span class="math inline">\(\color{green}{530}\)</span> stars. 👏</p>
-<p><strong><em>Note: Do not need to consider the above steps because open_data package already done it for us.</em></strong></p>
+<p>There are only <span class="math inline">\(\color{green}{530}\)</span> stars in our final sample. 👏</p>
+<p><strong><em>Note: You do not need to consider the above steps because the <code>open_data</code> package has already done it for us.</em></strong></p>
 </section>
 <section id="our-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="our-workflow">Our workflow</h2>
 <p>Let’s begin… 🤓</p>
 <ol type="1">
-<li><p>To download the processed data as a csv file and save locally, you need to run <a href="https://gist.github.com/JayaniLakshika/4d646a2ad364b1a97ff8aaf050a6d568">download_original.py</a>,</p></li>
-<li><p>Run <a href="https://gist.github.com/JayaniLakshika/3215e7b7c72e2d2c3424d477ba2fb296">this code</a> to further process data as indicated in original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,</p></li>
+<li><p>To download the processed data as a CSV file and save it locally, you need to run <a href="https://gist.github.com/JayaniLakshika/4d646a2ad364b1a97ff8aaf050a6d568">download_original.py</a>,</p></li>
+<li><p>Run <a href="https://gist.github.com/JayaniLakshika/3215e7b7c72e2d2c3424d477ba2fb296">this code</a> to process data further as indicated in the original paper to compute missing variables, new variables, cluster labels and produce plots of authors t-SNE results,</p></li>
 <li><p>Run <a href="https://gist.github.com/JayaniLakshika/b1e440a8432fd33c3587cf16e04cf8f7">this code</a> to conduct our own t-SNE results.</p></li>
 </ol>
-<p>In here, I used the $ authors already mentioned that in the paper.</p>
+<p>Here, I used the <span class="math inline">\(\color{red}{\text{Perplexity parameter as 40}}\)</span> authors already mentioned that in the paper.</p>
 <p>Here is the output..🤗</p>
 <div class="cell">
 
@@ -195,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="acknowledge" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledge">Acknowledge</h2>
-<p>I am grateful for Dianne Cook who suggested me as an exercise for me.</p>
+<p>I am grateful for Prof.&nbsp;Dianne Cook who suggested me as an exercise for me.</p>
 
 
 </section>
