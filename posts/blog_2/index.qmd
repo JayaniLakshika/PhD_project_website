@@ -8,9 +8,9 @@ editor: visual
 
 Today, I will introduce what are the initial steps that you need to follow when setting up a Python virtual environment in R for the shinyapps.io server.
 
-**Note: You need to have an account in shinyapps.io server. The page can be find in [here](https://www.shinyapps.io/).**
+**Note: You need to have an account in shinyapps.io server. The page can be found in [here](https://www.shinyapps.io/).**
 
-First, you need to create `.Rprofile` file within the directory of your shiny app. Then, initialize a suitable name for the $\color{red}{\text{Python virtual environment}}$.
+First, you need to create a '.Rprofile' file within the directory of your shiny app. Then, initialize a suitable name for the $\color{red}{\text{Python virtual environment}}$.
 
 ```{r}
 #| warning: false
@@ -19,7 +19,7 @@ First, you need to create `.Rprofile` file within the directory of your shiny ap
 VIRTUALENV_NAME = "new_env"
 ```
 
-After that, we need to set environment variables in `.Rprofile` file as follows.
+After that, we need to set environment variables in the '.Rprofile' file as follows.
 
 ```{r}
 #| warning: false
@@ -71,7 +71,7 @@ If not, can use **requirement.txt** which contains all the packages.
 reticulate::virtualenv_install(virtualenv_dir, c("-r", "requirements.txt"))
 ```
 
-Finally, define the Python virtual environment to be used used by `reticulate`.
+Finally, define the Python virtual environment to be used by `reticulate`.
 
 ```{r}
 #| warning: false
@@ -79,3 +79,5 @@ Finally, define the Python virtual environment to be used used by `reticulate`.
 #| eval : false
 reticulate::use_virtualenv(virtualenv_dir, required = TRUE)
 ```
+
+Done...👏

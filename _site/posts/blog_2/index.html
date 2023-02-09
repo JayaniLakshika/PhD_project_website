@@ -200,12 +200,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>Today, I will introduce what are the initial steps that you need to follow when setting up a Python virtual environment in R for the shinyapps.io server.</p>
-<p><strong>Note: You need to have an account in shinyapps.io server. The page can be find in <a href="https://www.shinyapps.io/">here</a>.</strong></p>
-<p>First, you need to create <code>.Rprofile</code> file within the directory of your shiny app. Then, initialize a suitable name for the <span class="math inline">\(\color{red}{\text{Python virtual environment}}\)</span>.</p>
+<p><strong>Note: You need to have an account in shinyapps.io server. The page can be found in <a href="https://www.shinyapps.io/">here</a>.</strong></p>
+<p>First, you need to create a ‘.Rprofile’ file within the directory of your shiny app. Then, initialize a suitable name for the <span class="math inline">\(\color{red}{\text{Python virtual environment}}\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>VIRTUALENV_NAME <span class="ot">=</span> <span class="st">"new_env"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>After that, we need to set environment variables in <code>.Rprofile</code> file as follows.</p>
+<p>After that, we need to set environment variables in the ‘.Rprofile’ file as follows.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PYTHON_PATH =</span> <span class="st">'python3'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Installs into default shiny virtualenvs dir</span></span>
@@ -231,10 +231,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">virtualenv_install</span>(virtualenv_dir, <span class="fu">c</span>(<span class="st">"-r"</span>, <span class="st">"requirements.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Finally, define the Python virtual environment to be used used by <code>reticulate</code>.</p>
+<p>Finally, define the Python virtual environment to be used by <code>reticulate</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">use_virtualenv</span>(virtualenv_dir, <span class="at">required =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Done…👏</p>
 
 
 
