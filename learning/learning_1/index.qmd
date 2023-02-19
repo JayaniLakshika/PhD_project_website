@@ -1,0 +1,193 @@
+---
+title: "Local vs global structure"
+date: "2023-02-14"
+categories:
+  - Basics
+editor: visual
+---
+
+```{r}
+library(Rtsne)
+library(umap)
+library(phateR)
+library(dplyr)
+library(langevitour)
+library(reticulate)
+library(ggplot2)
+use_python("~/miniforge3/envs/pcamp_env/bin/python")
+use_condaenv("pcamp_env")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+source(paste0(here::here(),"/learning/learning_1/functions_tri_hex_tsne_without_pc.R"))
+source(paste0(here::here(),"/learning/learning_1/functions_tri_hex_umap_without_pc.R"))
+source(paste0(here::here(),"/learning/learning_1/functions_tri_hex_phate_without_pc.R"))
+source(paste0(here::here(),"/learning/learning_1/functions_tri_hex_TriMAP_without_pc.R"))
+source(paste0(here::here(),"/learning/learning_1/functions_tri_hex_PaCMAP_without_pc.R"))
+```
+
+```{r}
+source_python(paste0(here::here(),"/learning/learning_1/data_s_curve.py"))
+
+tem_dir <- tempdir()
+path2 <- file.path(tem_dir, "dataset_S_curve.csv")
+data_S_curve(path2)
+data_s_curve <- read.csv(path2)
+data_s_curve %>% head(5)
+```
+
+```{r}
+langevitour(data_s_curve %>% select(-S_color), group = data_s_curve$S_color)
+```
+
+```{r}
+#| message: false
+#| warning: false
+features <- data_s_curve %>% select(-S_color)
+```
+
+<!--PCA-->
+
+```{r}
+#| message: false
+#| warning: false
+calculate_pca <- function(feature_dataset, num_pcs){
+  pcaY_cal <- prcomp(feature_dataset, center = TRUE, scale = TRUE)
+  PCAresults <- data.frame(pcaY_cal$x[, 1:num_pcs])
+  summary_pca <- summary(pcaY_cal)
+  var_explained_df <- data.frame(PC= paste0("PC",1:3),
+                               var_explained=(pcaY_cal$sdev[1:3])^2/sum((pcaY_cal$sdev[1:3])^2))
+  return(list(prcomp_out = pcaY_cal,pca_components = PCAresults, summary = summary_pca, var_explained_pca  = var_explained_df))
+}
+
+pca_ref_calc <- calculate_pca(features,3) 
+var_explained_df <- pca_ref_calc$var_explained_pca
+data_pca_val <- pca_ref_calc$pca_components
+pca_ref_calc$summary
+```
+
+```{r}
+#| message: false
+#| warning: false
+var_explained_df %>%
+  ggplot(aes(x = PC,y = var_explained, group = 1))+
+  geom_point(size=1)+
+  geom_line()+
+  scale_x_discrete(limits = paste0(rep("PC", 3), 1:3)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r}
+#| message: false
+#| warning: false
+
+ggplot(data_pca_val, aes(x = PC1, y = PC3, color = data_s_curve$S_color)) + 
+  geom_point() 
+
+langevitour(data_pca_val, group = data_s_curve$S_color)
+```
+
+<!--tSNE-->
+
+```{r}
+N <- dim(features)[1]
+opt_perplexity <- sqrt(N)
+
+data_pca <- data_s_curve %>%
+    select(where(is.numeric)) 
+
+tSNE_data <- Fit_tSNE(data_pca, opt_perplexity, 3)
+langevitour(tSNE_data %>% select(-ID), group = data_s_curve$S_color)
+```
+
+<!--UMAP-->
+
+```{r}
+#| message: false
+#| warning: false
+UMAP_data <- Fit_UMAP(data_pca, 15, 3)$UMAP_df
+langevitour(UMAP_data %>% select(-ID), group = data_s_curve$S_color)
+```
+
+<!--PHATE-->
+
+```{r}
+#| message: false
+#| warning: false
+knn <- 3
+PHATE_data <- Fit_PHATE(data_pca, knn)
+langevitour(PHATE_data %>% select(-ID), group = data_s_curve$S_color)
+```
+
+<!--PaCMAP-->
+
+```{r}
+#| message: false
+#| warning: false
+source_python(paste0(here::here(),"/learning/learning_1/Fit_PacMAP_code.py"))
+tem_dir <- tempdir()
+
+Fit_PacMAP_data(data_pca, tem_dir)
+
+n_neighbors <- function(n){
+  sample_size <- n
+  if(sample_size > 10000){
+    knn <- 10 + 15 * (log10(sample_size) - 4)
+  }
+  else{
+    knn <- 10
+  }
+  return(knn)
+}
+
+nn_components <- as.integer(3)
+knn_n <- as.integer(n_neighbors(dim(data_pca)[1]))
+## Used default values
+init_n <- "random"
+MN_ratio_n <- 0.5
+FP_ratio_n <- as.integer(2)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+
+Fit_PaCMAP(nn_components, knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+
+PaCMAP_data <- read.csv(path2)
+PaCMAP_data <- PaCMAP_data %>%
+  mutate(ID=row_number())
+langevitour(PaCMAP_data %>% select(-ID), group = data_s_curve$S_color)
+```
+
+<!--TriMAP-->
+
+```{r}
+#| message: false
+#| warning: false
+
+source_python(paste0(here::here(),"/learning/learning_1/Fit_TriMAP_code.py"))
+tem_dir <- tempdir()
+
+Fit_TriMAP_data(data_pca, tem_dir)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+
+n_dims_n <- as.integer(3)
+n_inliers_n <- as.integer(12)
+n_outliers_n <- as.integer(4)
+n_random_n <- as.integer(3)
+
+Fit_TriMAP(n_dims_n, n_inliers_n,n_outliers_n, n_random_n, path, path2)
+
+TriMAP_data <- read.csv(path2)
+TriMAP_data <- TriMAP_data %>%
+  mutate(ID=row_number())
+langevitour(TriMAP_data %>% select(-ID), group = data_s_curve$S_color)
+```
+
+## References
+
+https://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html#sphx-glr-auto-examples-manifold-plot-compare-methods-py
