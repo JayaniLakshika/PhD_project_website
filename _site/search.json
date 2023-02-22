@@ -39,7 +39,7 @@
     "href": "Blogs.html",
     "title": "Posts",
     "section": "",
-    "text": "How do we set up a Python virtual environment in the R shinyapps.io server?\n\n\n\n\n\n\n\nTechnichal\n\n\n\n\n\n\n\n\n\n\n\nFeb 9, 2023\n\n\n\n\n\n\n\n\nCan the tSNE results be reproducible?\n\n\n\n\n\n\n\ntSNE\n\n\n\n\n\n\n\n\n\n\n\nFeb 5, 2023\n\n\n\n\n\n\nNo matching items"
+    "text": "Is there any difference between dimension reductions in \\(2-d\\) and \\(3-d\\)?\n\n\n\n\n\n\n\ntSNE\n\n\n\n\n\n\n\n\n\n\n\nFeb 22, 2023\n\n\n\n\n\n\n\n\nHow do we set up a Python virtual environment in the R shinyapps.io server?\n\n\n\n\n\n\n\nTechnichal\n\n\n\n\n\n\n\n\n\n\n\nFeb 9, 2023\n\n\n\n\n\n\n\n\nCan the tSNE results be reproducible?\n\n\n\n\n\n\n\ntSNE\n\n\n\n\n\n\n\n\n\n\n\nFeb 5, 2023\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/blog_2/index.html",
@@ -68,5 +68,12 @@
     "title": "Local vs global structure",
     "section": "References",
     "text": "References\nhttps://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html#sphx-glr-auto-examples-manifold-plot-compare-methods-py"
+  },
+  {
+    "objectID": "posts/blog_3/index.html",
+    "href": "posts/blog_3/index.html",
+    "title": "Is there any difference between dimension reductions in \\(2-d\\) and \\(3-d\\)?",
+    "section": "",
+    "text": "Generally, we reduce the dimensions to 2-d and see the visualization. But you also can try to reduce to \\(3-d\\) as well.\nThe main issue you would in mind is that can it preserve the same structure as in \\(2-d\\).\nLet’s look an example…\n\nrandom_num1 <- runif(1, min = 1, max = 10000000)\nset.seed(random_num1)\nu <- runif(1000, min = 10, max = 30)\nv <- runif(1000, min = 10, max = 20)\nx <- u + v - 10\ny <- v - u + 8\nz <- rep(0, 1000) + runif(1000, 0, 1)\nw <- rep(0, 1000) - runif(1000, 0, 1)\n\ndf_2 <- tibble::tibble(x1 = x, x2 = y, x3 = z, x4 = w) \n\n\nN <- dim(df_2)[1]\nopt_perplexity <- sqrt(N)\n\ntSNE_fit <- df_2 %>%\n    select(where(is.numeric)) %>%\n    Rtsne(perplexity = opt_perplexity, pca = FALSE, pca_center = FALSE, normalize = FALSE, dims = 2)\n\ntSNE_df <- tSNE_fit$Y %>%\n  as.data.frame()  %>%\n  mutate(ID=row_number())\n\nnames(tSNE_df)[1:(ncol(tSNE_df)-1)] <- paste0(rep(\"tSNE\",(ncol(tSNE_df)-1)), 1:(ncol(tSNE_df)-1))\n\ntSNE_df_plot <- tSNE_df %>%\n    ggplot(aes(x = tSNE1,\n               y = tSNE2))+\n    geom_point() +\n    coord_equal()\n\ntSNE_df_plot\n\n\n\n\n\ntSNE_fit1 <- df_2 %>%\n    select(where(is.numeric)) %>%\n    Rtsne(perplexity = opt_perplexity, pca = FALSE, pca_center = FALSE, normalize = FALSE, dims = 3)\n\ntSNE_df1 <- tSNE_fit1$Y %>%\n  as.data.frame()  %>%\n  mutate(ID=row_number())\n\nnames(tSNE_df1)[1:(ncol(tSNE_df1)-1)] <- paste0(rep(\"tSNE\",(ncol(tSNE_df1)-1)), 1:(ncol(tSNE_df1)-1))\n\nlangevitour(tSNE_df1 %>% select(-ID))"
   }
 ]

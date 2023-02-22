@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-02-22">
+
+<title>PhD research project - Is there any difference between dimension reductions in \(2-d\) and \(3-d\)?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="../../site_libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<script src="../../site_libs/langevitour-0.5.1/langevitour-pack.js"></script>
+<script src="../../site_libs/langevitour-binding-0.5.1/langevitour.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">PhD research project</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../Blogs.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../Learning.html">
+ <span class="menu-text">Explore</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Is there any difference between dimension reductions in <span class="math inline">\(2-d\)</span> and <span class="math inline">\(3-d\)</span>?</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">tSNE</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 22, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<p>Generally, we reduce the dimensions to 2-d and see the visualization. But you also can try to reduce to <span class="math inline">\(3-d\)</span> as well.</p>
+<p>The main issue you would in mind is that can it preserve the same structure as in <span class="math inline">\(2-d\)</span>.</p>
+<p>Let’s look an example…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>random_num1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">10000000</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(random_num1)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">30</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">20</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> u <span class="sc">+</span> v <span class="sc">-</span> <span class="dv">10</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> v <span class="sc">-</span> u <span class="sc">+</span> <span class="dv">8</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">1000</span>) <span class="sc">-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df_2 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">x1 =</span> x, <span class="at">x2 =</span> y, <span class="at">x3 =</span> z, <span class="at">x4 =</span> w) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">dim</span>(df_2)[<span class="dv">1</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>opt_perplexity <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(N)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tSNE_fit <span class="ot">&lt;-</span> df_2 <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Rtsne</span>(<span class="at">perplexity =</span> opt_perplexity, <span class="at">pca =</span> <span class="cn">FALSE</span>, <span class="at">pca_center =</span> <span class="cn">FALSE</span>, <span class="at">normalize =</span> <span class="cn">FALSE</span>, <span class="at">dims =</span> <span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>tSNE_df <span class="ot">&lt;-</span> tSNE_fit<span class="sc">$</span>Y <span class="sc">%&gt;%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()  <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ID=</span><span class="fu">row_number</span>())</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(tSNE_df)[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(tSNE_df)<span class="sc">-</span><span class="dv">1</span>)] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="st">"tSNE"</span>,(<span class="fu">ncol</span>(tSNE_df)<span class="sc">-</span><span class="dv">1</span>)), <span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(tSNE_df)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>tSNE_df_plot <span class="ot">&lt;-</span> tSNE_df <span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> tSNE1,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> tSNE2))<span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>tSNE_df_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tSNE_fit1 <span class="ot">&lt;-</span> df_2 <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Rtsne</span>(<span class="at">perplexity =</span> opt_perplexity, <span class="at">pca =</span> <span class="cn">FALSE</span>, <span class="at">pca_center =</span> <span class="cn">FALSE</span>, <span class="at">normalize =</span> <span class="cn">FALSE</span>, <span class="at">dims =</span> <span class="dv">3</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tSNE_df1 <span class="ot">&lt;-</span> tSNE_fit1<span class="sc">$</span>Y <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()  <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ID=</span><span class="fu">row_number</span>())</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(tSNE_df1)[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(tSNE_df1)<span class="sc">-</span><span class="dv">1</span>)] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="st">"tSNE"</span>,(<span class="fu">ncol</span>(tSNE_df1)<span class="sc">-</span><span class="dv">1</span>)), <span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(tSNE_df1)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">langevitour</span>(tSNE_df1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>ID))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="langevitour html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a92bd1b919d67e89aacf" style="width:700px;height:600px;"></div>
+<script type="application/json" data-for="htmlwidget-a92bd1b919d67e89aacf">{"x":{"X":[[-20.427392876377,-10.1577607934547,11.3490860512577],[-9.00096075475346,2.1957952943104,8.10554879417525],[-9.0592479122188,14.9928310933829,3.27308670591266],[-7.48387416134131,1.62576314088661,8.22191456589639],[12.238852328557,4.63754914998355,-4.23780122369091],[-10.1644087101222,-15.3364160457113,10.5895781248323],[-14.6122462537132,4.8576692621677,7.56993459200109],[7.41253603637151,9.44243720653303,-2.99218410000094],[-4.47511747822059,7.84169417848657,6.22890060083165],[13.0115305909609,-5.36099638345836,3.06605304394176],[11.8181889562396,-9.30111723762309,4.88942642265371],[-25.1085140296425,-4.21491118970488,12.6794495140097],[-17.7486647786869,-11.6959686307961,10.6267774513173],[-12.3973692713036,-6.15289551346394,9.27010508301091],[-11.8256610167133,-19.6031232680048,10.7343939503596],[16.4551952533893,-7.83209362834016,-3.37111975022479],[4.11732331364118,16.0749140444107,-7.61746143886322],[17.3367616742166,-2.57608656461524,-19.1941998311968],[13.6091468178253,6.24293862702309,-13.7540455670735],[-8.19018792784749,-21.170679145181,10.8628093905544],[17.3676336835928,-2.55921151343945,-17.837108368496],[-2.75090410784097,-17.9209337551947,11.0268035839571],[-14.3419883393831,11.6340736170462,5.19295954848735],[12.3608582398696,-3.856562834269,3.71715647171549],[-7.4587368731185,12.8335195818431,4.31166226314114],[-3.52609281409142,7.24761041983388,6.47060534645506],[13.4477513406341,7.65672077236784,-21.1121533534743],[9.7812019919432,12.823610263705,-16.2074478869846],[-4.42206447589563,-14.4463007451219,10.8292367217079],[-3.38584763377337,-18.8319178217878,10.9779802042741],[12.6955390360834,-2.84646947708422,2.58210799073253],[14.6396636252598,4.46773445636853,-15.6857201122895],[1.34727103024305,-13.1443294955331,10.4446271749498],[-1.80569463252923,14.6092187384869,0.798144818783417],[4.64587565835553,7.50973919185747,1.46824353805435],[5.76457962858302,18.0542936833015,-14.487307920602],[-10.7566858472463,-4.28700641637592,8.9271474435543],[-27.2591280246493,-0.530846806074653,12.7517693836035],[8.23093336566805,16.6208499827912,-21.1514840347185],[-14.0284382243332,4.13359110075859,7.7410787533405],[1.84598198078705,-13.3888890187589,10.2976056827218],[15.9657665852426,0.261595718569329,-14.9074669308319],[3.00008034074604,15.8057168030606,-5.50775255344919],[8.82746392971558,10.715495307171,-7.18257928676985],[-14.0385256262326,12.2048372255125,5.54519742815869],[-10.7823021704288,-22.2757884455102,10.4533718145669],[7.1738794176296,15.9117032313445,-14.5206961015281],[-26.7658806167004,-0.366325234103663,13.5250936092637],[-16.0816169835803,-4.14982464535428,9.02856868988413],[17.7171152328158,-4.893753955068,-11.5561385121163],[17.0873966091609,-1.96594835628097,-12.994218732372],[-9.02145227649105,13.0041149040753,4.50988050048912],[3.61652238634536,5.35707028271858,3.67133552336828],[10.5543028015569,-10.4980409386376,5.92058305930207],[-20.3870670362602,-10.5989689890171,11.3967812002765],[-2.21994142894702,2.72962266235706,7.21532354546994],[-3.22902118660957,5.70373855802226,6.73254372421414],[-8.70546134511008,3.37628032926298,7.86127029052214],[-3.20775670540839,-9.47743204093034,10.4420151797639],[-19.5174031728434,2.54950254928688,8.69520604158885],[11.759452203637,11.5437238846051,-22.817809084476],[-8.09929894178276,14.2243803342105,3.59845057655091],[12.8794618923368,-8.63353138176046,3.6753361947444],[-4.15685673117539,-19.710109775722,11.0007935288157],[-23.6468715322699,1.06982046765386,11.2307661520984],[-3.20417126546125,10.0667608055192,4.70808392226317],[4.65562754441388,12.847045142747,-3.68355382066032],[-2.263271020861,-17.4304750532071,11.0186215810091],[11.2209846142927,11.4149184727832,-19.4272892971863],[-13.6850118650635,-23.0004063816925,10.7071636176467],[17.1541632296887,-1.45975161571043,-22.6845882540811],[-5.16364867650264,-11.2141224216189,10.4368971857435],[12.0890597448436,7.32885524123415,-8.59589099933618],[-9.44672787167227,-3.21988361225917,8.92809470192416],[-5.49801180075175,-18.7641247580846,10.9612416433508],[-8.6371817484283,2.95787371455273,7.95255373435228],[-12.6566938168087,-15.6995876019796,10.5765311947594],[-18.349810032826,-1.75768335278011,9.0233176908158],[0.521314907578544,-8.70763320374443,9.89680220560924],[-18.1026702954123,-14.3320973002229,11.2911685281669],[-1.4636583828304,2.19344359810979,7.17786209368726],[-2.75018052792667,-18.7442072380547,11.1482391858102],[-18.0854904249575,-9.24614820698403,10.3314316650604],[-15.2295781039652,-3.87710705574605,8.91955963236895],[0.157225261591051,9.68095592047801,3.20550581798699],[10.1936952345477,5.74766360616313,-2.15122240433684],[-12.1884718980923,12.167790946025,5.27876692907871],[9.27836603047577,9.76445325307075,-6.23597770284442],[11.9660976813116,-2.82840776650052,3.39617019928994],[17.5031241775646,-3.1811374886677,-20.0105886688635],[-17.8410732479597,-11.3260769841233,10.5784174868885],[12.9071420853318,0.937798760931671,-0.849239371292757],[-18.6111252429389,2.41608883182251,8.49212741331459],[10.4127793904268,4.44114340950897,-0.978529159613614],[-26.4982134024361,0.15740770526491,12.2254494516136],[-14.6940703584743,-5.94949463537379,9.21296720891168],[-19.6651153648539,-10.9231077729933,11.193575853534],[9.3005720642116,-4.96482828301755,6.01519335376835],[-2.72791060859864,-9.8026139410996,10.2878720592581],[5.0940385028924,9.14329242506021,-0.254784131731713],[-0.0257920966587985,3.86180511974332,6.12563776278509],[-11.9206773147752,-15.9645181062921,10.6097965400784],[-8.03169030900506,14.7905955377682,3.18880488432671],[-14.5627938951815,5.68877587727403,7.38313582381764],[11.2928286369361,-5.81538591441353,4.87051894065623],[-22.9390767995935,-4.04028716931381,11.357461424926],[16.3087038283703,-5.34693536505937,-4.39605408032503],[18.5100036406709,-6.33920022352452,-12.3725853713536],[13.9529758447618,6.59097841450326,-21.8263745705128],[5.89230847957954,17.4340424510982,-13.8278667705313],[9.54334749530198,10.0084562354666,-7.45048865551091],[8.20258322790614,13.3214634215628,-11.6761637667224],[8.46859787386002,13.2957797639457,-12.4194324031276],[15.7230500546929,2.39942083474569,-22.5442611382835],[-11.0195967792985,-25.1504649417205,11.2177204339348],[14.556631156846,4.44397914533086,-14.1429098115795],[13.2683635131178,-9.93569151244148,3.10891978161021],[-3.18136510100835,16.2214071066615,0.0380425135315399],[13.4665686725599,-3.00558878344283,1.46521385572054],[-22.5983009662568,1.83841641584655,10.1313378728497],[12.5242599399337,2.28779230365124,-1.65602519093692],[-1.51274741894656,15.9892828018113,-1.1430812740773],[-25.1952157486975,0.200651711759785,11.8253192915408],[-5.72435872269526,14.3600925736941,2.85141070835358],[-2.30691662612975,5.94788136083379,6.38268571159252],[12.7270497331656,6.13008255790374,-8.29016285207828],[14.0463920225898,5.08366357289677,-12.1793490740351],[14.1507281704337,1.43491072886548,-4.01911166573686],[4.42770480677424,7.65097785897554,1.52801476721604],[-3.26661014531228,2.21242151661784,7.59098750667607],[8.19314379951632,14.2799311163817,-14.0978175272734],[-25.0648783402833,-0.732964292005453,12.0187062684898],[-0.113092265676594,-8.132541351966,9.86992059309775],[16.5935224346043,-6.15669940928907,-4.71070314403847],[9.27229706726551,-9.13184673232267,6.76052608438368],[15.9785817368867,-7.40152922415674,-2.55114137047675],[-9.76599387662238,8.77514106583723,6.39816556826729],[-9.2391557661699,-22.7184231725671,10.8800288185364],[17.0020371226311,-4.7995990002874,-7.72322812372528],[11.4167851747078,12.0494765397702,-21.7445510740869],[-4.32643793389654,14.737162846229,2.06440986212656],[-19.5212352519438,-8.70231774145914,10.6203662187814],[-23.5134702861144,-7.4156282198882,12.3540651136878],[-19.4276560377267,6.14241959182244,7.48741857269458],[-11.3142728341767,10.487489845784,5.85360797084908],[16.7120780192436,-0.508858662670322,-16.6568146717513],[-24.5573179828853,-1.07774469776804,11.7256727685213],[-9.5484372428353,4.18713076422227,7.69707731081413],[-4.33507370387552,1.75261627432957,7.86257031218793],[-6.97298470171785,-20.1936096732193,10.9013234759402],[-15.0019273365573,-10.2433715652315,10.0394300991086],[8.41969644711902,16.6269873374944,-21.772468620278],[-2.81180022849816,3.31721086098782,7.22182727017039],[-5.03155616083825,6.33702359380091,6.84647247303632],[-17.9061232131829,-3.02290403502763,9.14728065187448],[-7.55728821802523,15.7146305376622,2.4120050143515],[6.98917846332925,16.7747444673476,-16.1823086077593],[-3.71969720117724,6.52308810541876,6.60478059437639],[-5.24034336623536,2.75581553179937,7.74102556005096],[-12.3940913644188,12.6533204123091,5.03698493099678],[-3.2107725828022,-4.99391281346097,9.49679916385153],[-2.49872696742831,15.2819558246447,0.655367480839795],[18.2811529148107,-5.47329769051375,-14.6862837718211],[-1.99393644132025,14.4358011569301,1.05638256863899],[8.07577192755359,15.5354318517164,-16.5291609434862],[13.2498410312158,5.72535142281197,-9.25709313441704],[0.0562794561629787,-15.6221481907552,10.907682267763],[17.9295925092005,-4.36723140763538,-15.4004605520316],[-7.53170861284228,13.1341456573263,4.15027937552569],[12.9005246249796,6.33676217732095,-8.62271127719373],[3.46055641826189,5.73097223598391,3.50026769064431],[9.10680768439339,16.492439360833,-21.3197101790861],[13.5705381845095,7.59158031047653,-21.540977585462],[-23.1895606283825,0.637037050790084,10.7177131117913],[-6.99917439672126,-11.5319514176387,10.3781199493374],[17.3369697860606,-2.42409085699083,-17.1962751727697],[16.8224752295544,-0.825564508155363,-20.8664131021127],[15.1749156045762,3.08176392542734,-14.7551656641057],[-10.8825357414137,-17.5384588865695,10.6753532015273],[-26.0102421579028,-0.468539484320797,12.8399414945885],[9.80854589547676,-8.68297874701747,6.45524605790615],[-2.59509733098609,15.8755719578187,0.0352667377805026],[11.7825235016194,7.81742100872926,-8.72437358478191],[12.3287047883012,-1.96502789049086,2.48149119954561],[-24.7417493555165,-3.3818165436766,12.2745538927204],[-9.85842666601085,-16.2887514531669,10.6608222896135],[0.895127100510623,-11.8846671262416,10.3685199116707],[16.7906061710641,-0.888829650411917,-24.1876324661389],[10.8612702084982,3.13553707393806,-0.135257500558365],[17.0746221156966,-1.6187071402389,-17.6296761998946],[-14.7455331933278,-4.73061372089087,9.0223523558049],[-7.00430115895113,1.71642171726342,7.95185229942709],[14.3353054210981,4.95483162130959,-14.6074975926265],[8.89578491889879,-3.04054075599412,5.64034708676016],[16.466577696839,0.0939850367786641,-19.6022743015416],[4.88468529760803,15.1764389852555,-7.49517393045224],[-11.3970832012356,-23.7224572211465,11.3708356613132],[12.8931681771144,-9.57569873528248,3.73809040131282],[11.4967756860115,3.68330002671191,-1.55967320203551],[-5.705803454047,-17.6379408139416,10.9296723296835],[-10.8521045330982,12.0876152475636,5.19194894493323],[1.3032846129388,-14.6336342486615,10.579958184035],[-9.25657318436624,-23.2077921348456,10.93825467707],[12.7080212375096,9.10562588235608,-21.8342634369484],[5.46128114316514,13.704770673028,-5.98960467932317],[-12.3338288201998,-7.44988606767708,9.43481172514457],[17.3229244175269,-3.09429712116051,-21.4610015408404],[13.3361759853771,5.49196600385207,-8.90813296113895],[-0.443968995135691,9.13225704016578,3.95067913851849],[3.9038514989535,-13.9171018882566,9.6002200360844],[-21.1463888967308,0.787612376156994,9.63791471192695],[-5.36071455774285,2.8313504635777,7.73868109206603],[8.26182653807345,16.9099315187168,-20.5447254531075],[11.2659254833628,-10.8021905208897,5.65499711658894],[16.5258298444127,-0.33447782356856,-15.1732502337798],[-1.78351009932738,-5.45936984578199,9.48582740879129],[13.9366186733398,5.5394803935287,-13.388125422926],[-27.4305560033771,-0.173426017968827,13.3522396659746],[0.112982442047606,-11.9553355726307,10.5275787710244],[13.4565442824686,-0.893616705316837,-0.00920249375091613],[12.2203590094776,-6.56811436142456,4.13177131226686],[16.1179126078546,1.45601750784576,-22.2265398440334],[-1.98908048577226,-18.342447326435,11.093001274182],[-2.77468411378524,7.25836234706521,6.01093175260293],[11.0297869520039,-2.54525368278173,4.04262320763092],[-13.2484927553527,-17.1427570067689,10.7768885465974],[11.29889192572,7.34476283311848,-6.4499599784304],[15.3287445382639,-8.80573076059708,-0.618727315883282],[17.8904477702655,-4.16623716233683,-20.60368777368],[-18.3868786695618,-11.5176327984554,10.7045471662532],[16.8588614089999,-1.07706131128563,-19.5558713771741],[12.88941871527,8.4047663478569,-21.3474379702198],[-24.4039439081352,-3.06041794424853,11.9919484791872],[1.09273450565492,-5.79130558877008,9.01342214103694],[11.3030871264062,-9.85796922016934,5.3555143239643],[-2.48421346678274,14.6611357141807,1.20886969038033],[17.3064423990324,-2.31449847558088,-14.3471480188515],[0.149679572592091,2.83758099170141,6.42396951294194],[-21.7364285455447,-1.69036204239865,10.3071820945972],[4.50171659896971,11.8336654975641,-2.29412304613981],[12.5599128994813,2.57129624157009,-2.09382094719916],[-5.91099950468745,7.84312023921587,6.45627179148192],[-2.19812934234978,-6.2967354136264,9.68747508469053],[-15.0572552424655,4.15810648409791,7.80979923922827],[-14.0808101203371,5.13826852612423,7.51536296112109],[10.0834073185508,-5.61132858276706,5.72373866881268],[-15.9287556484857,4.17628168259098,7.87172642673771],[-3.72814039315316,-13.8170763587305,10.80776148753],[-14.4241953480393,-9.60778860845213,9.87790558142519],[-11.6882269924022,11.6801343114035,5.38656559950344],[-3.38076818565333,-4.40813452150971,9.36948162138712],[-13.126026245521,-21.9816897995745,10.6848015797854],[8.62555846828957,16.4451127741374,-20.4968820786923],[-10.1354599321575,-22.4500325105581,10.6309122923251],[13.0315807024994,-1.52974938677321,1.23702789356081],[10.0315331693932,-8.04253235241803,6.2219985358672],[-7.65414557432281,-10.8596121533754,10.2320456675248],[0.5242500252282,-16.6704733748398,10.7953826292832],[-0.148610845438322,-15.107633201592,10.8954174561024],[7.3566933569225,15.9576587122017,-15.2005482694055],[10.4164319649261,12.8233906026032,-22.4131058931575],[2.60847394799646,-12.3693699659478,9.94242078542973],[-18.8809301203656,7.18554752841711,7.23480151579467],[7.74930916779237,12.6173890723329,-8.85070262625491],[-6.13744612927844,-18.6976992931407,10.9207168630576],[-23.4048805698272,2.78339428630954,10.3235002957171],[-6.5063274555323,-20.3318266156677,10.9237840751962],[-24.2752776915511,1.95520684518469,10.8608419287016],[17.5460799977122,-3.2413599125968,-14.0364864047551],[-3.85496977084767,16.0717671136751,0.617205924027521],[15.227911537764,3.18403965748871,-23.3709690552001],[13.181372570969,-2.46591990041765,1.6009891035082],[8.11612981807263,14.9256939220012,-15.2894210039034],[13.5969768563947,6.9048158959255,-22.5558633727001],[-3.38577271340489,15.6843783496963,0.733620989755983],[-18.9186021719688,-2.50085020493674,8.89541075776586],[10.6528435211293,8.70742122419513,-7.52269237283715],[-1.98901890546829,8.75327169923835,4.97539917864222],[-18.280797716458,6.72609897070537,7.16068714492026],[11.385232498174,-8.92117765448871,5.28051413311054],[-13.2850842772486,3.99177692743903,7.77242267267888],[15.5552795395223,2.35394599545684,-22.9757189939891],[8.54191265036563,15.9458033267435,-19.1258885318893],[-20.9498040068574,-10.8731191770891,11.777395244776],[13.7443491117476,-9.41851455540666,2.43270428346495],[7.59487460803834,16.9922610959546,-18.2558249165877],[11.8791906980011,10.6213232895266,-20.9938961238928],[-8.91521393338893,-20.9062050163139,10.7514346205778],[17.3519485750501,-5.59868182013616,-8.53387312309282],[-2.55028859317614,-5.52354422369967,9.5787053071965],[10.2636115748873,6.40012410045834,-3.09824574516934],[11.7654053503836,-10.9624885685583,4.87563119435447],[17.9307899318568,-5.43139503265454,-15.1526341373575],[-6.95210859687791,12.8668790311422,4.17787808479353],[13.6062018425051,-1.89814450946423,0.437199930523488],[13.0168380619574,4.81569604684008,-6.24160160621342],[10.0662501133884,-8.0723575638328,6.20544042534207],[-16.1754481563591,6.77098928727532,7.09042701287073],[2.8410835449222,4.76251182193229,4.38453779490184],[6.25737573050494,17.4895967987723,-16.5639841208421],[8.47097430545863,13.4500663081878,-12.9745849292031],[-9.64935892623342,-19.3242464548736,10.7516233066311],[-12.608002445124,-17.4200630849059,10.7000678387509],[-20.5451976585812,-14.8022272461684,12.2006962496358],[-2.38199824320579,-18.5989869955723,10.8298535473617],[14.3448619383356,5.60880873384075,-20.9674567897788],[-23.6226011359745,-7.20946565023721,12.4064871578289],[-25.1420980777389,0.841332395466355,12.0244441606383],[5.93244416504312,18.1640113539924,-15.5461919861996],[-2.85797712781108,-8.51035642941764,10.1528797208177],[12.1413508273456,10.305802448046,-22.9931302061181],[1.95242394711759,-5.34020991042335,8.64235469672254],[-18.7752361785174,-16.6611358562862,12.0313662787009],[-11.813860148056,-21.910007021394,10.454831608404],[1.00813877925388,-16.2876737762716,10.7891695498974],[7.07555379954081,14.1156724490602,-10.3236425611556],[8.70717082876204,12.5781277571103,-11.4221072873935],[17.1513046369932,-5.51708018235769,-7.59827695118015],[-10.8254646142717,-5.58801481328925,9.1725300941635],[16.8893948930978,-6.19809196964518,-5.85176706013606],[-3.5566024511907,1.76255698000611,7.77302231480058],[14.5571414548116,0.990525655688877,-4.65441739928416],[11.4816687102843,11.2715479030572,-20.239787440327],[17.2757876120091,-2.24592978425121,-20.54656182051],[16.0887538297165,-8.31845040512008,-1.83996502445427],[7.86213169590343,16.8887931898906,-18.823304083227],[-20.1248017176545,-1.2768612933901,9.51719235040219],[-22.9704682927281,-6.11659094291231,11.720331861448],[-9.34383849558244,-21.6607940514875,10.7961802437221],[-3.06196833530401,7.75532992539859,5.89962518550654],[-9.67905543361666,-5.04361961665272,9.19063195993662],[-12.2852253244443,10.1381021378388,6.0652658237044],[15.2474323060595,1.42959578171946,-8.25494032596459],[13.7833122522304,5.97702051910432,-14.2349350307275],[11.7459576760307,7.94343143574965,-9.26134476714649],[-10.6551514234135,1.75709242454544,8.21339362995343],[-10.5468515693581,14.0070045085482,4.14137773861929],[-19.0788508218217,-1.95572648667101,9.29478540137609],[8.74413201161287,14.0853715252636,-15.4037642172907],[-12.2022468723318,-5.4734844646256,8.87948693627256],[9.43560288941502,-3.66167380435463,5.56943701170058],[16.9458393954122,-1.71458302354235,-22.1841374854247],[7.88138001754597,13.3545372468361,-10.8135713223039],[-19.2730215504785,-11.3116983364866,10.7641642977655],[13.2013820764699,-9.72986408565425,3.30498129020239],[10.5955863319125,-8.75517638872542,5.86376187974914],[-14.8852783605659,11.5167800801105,5.75329959663492],[9.02867328348248,-3.32987783055391,5.67547001891177],[-6.32690275509949,1.78284549459327,8.06464802324046],[11.564482246909,11.9975605381223,-22.9013706086869],[16.8488384396617,-5.84007330520675,-5.90342289755017],[4.79304734905644,9.85747235709055,-0.579470392974789],[-7.08234209505127,2.64024303532599,7.94268455749082],[-4.55470890257175,-16.0873617187386,10.9338711342298],[-1.44460026376358,9.02182259955087,4.58064512235756],[-10.6282087514297,-23.5496991599694,10.9652009613383],[-11.6582018692335,-6.0167755925515,9.16918071184485],[-1.13262383075189,-17.4282253358776,10.9815587608152],[5.04740211384885,10.8674954315681,-1.84844908483551],[9.91296753966217,14.7369730940028,-21.4236583252754],[12.6770266246383,5.47850936180517,-6.56595199679902],[-13.630546848469,11.2324295848778,5.72865167731373],[-5.8889797838761,15.1853942414216,2.29050417437912],[13.0132790067305,-4.86082603758111,2.98008608818762],[-26.8297701819658,-0.976027299233055,12.9984399333562],[-2.48737219182301,7.47690065006566,5.87815332295235],[-1.31234624076912,16.6462673842918,-1.65044753158867],[-0.14856459451384,-16.6358884623282,10.8885109849594],[-16.7551683566264,7.33614366100056,7.04941003751027],[9.7151409664403,-5.05406103595199,5.83369727268684],[-8.5377285646571,-22.356381235967,10.8793663810555],[-10.1859574411911,-5.3321667098817,9.16027257423489],[10.5092024410539,-9.61898860104176,6.00759920664217],[11.2365535009828,11.6290661195444,-20.2039175334289],[-12.0942614768296,10.2566005086591,5.98028494035241],[13.8504024106173,-9.36600758865458,2.123301916958],[-25.0706596699088,1.37151058155406,11.4267132239212],[8.68721648458574,9.04395897881639,-4.20622672515577],[1.58625462112512,-12.3130240697581,10.254061869503],[-5.0353339782363,6.77505734309171,6.71549499358753],[9.70572616701573,-6.98927139186231,6.29690175826182],[-2.1437468922635,9.79992158230437,4.44113699187681],[-14.0950950924905,7.40226300682754,6.93354723034337],[7.70820314536112,13.2563131560996,-10.2113926624436],[10.1673309112802,11.8126383650579,-15.0320893889878],[13.80030404093,4.86690685495259,-9.81651463809297],[-20.0286652536495,-2.97181438815179,9.69041310988843],[4.06854179398848,15.4078586992471,-6.35591343568541],[0.9821779762711,-13.1219537231949,10.5082233098078],[17.7943654508646,-3.08485341067231,-21.5210430887376],[-12.7422084137988,-5.392696021905,9.17152772306419],[-16.7079717847192,9.08474946594028,6.53229330654777],[15.1600117046681,0.0340344658252444,-5.53111681277768],[1.287746718282,-16.1854048803197,10.6452469208552],[6.26340859659319,18.0127641866493,-15.3553483475463],[14.6496046565385,1.96471629464131,-6.50499506668199],[11.3651637992335,12.5925177567652,-22.5888303706778],[13.7489290675068,-1.24542251806639,-0.316090820151459],[-19.6826728257983,-16.0184144899081,11.9520460133066],[-16.3161675672079,-3.51541167947025,8.942864443798],[-6.79880974480023,-11.0020968313902,10.3263418452481],[17.8499928668029,-5.95521866586913,-12.7041730154214],[15.036258258351,-8.87811639390747,-0.0348991860043726],[-18.785107954743,5.5630358328222,7.67156172530675],[10.9784213021731,2.67129045636247,0.178847789854594],[-23.6771014175953,-5.90180608316728,12.1312979301047],[8.09500327628098,16.416993927089,-18.5709685728925],[-18.8060196361739,-3.29869950410157,9.45295545768737],[-7.56122752476611,15.0997892471074,2.84813079247793],[-15.058533148864,5.92806906454805,7.40405331189059],[-7.45727895476063,-20.0649711003785,10.8629204356382],[-8.76683845533456,13.9577075923218,3.90591958375209],[-19.6851334751637,-11.19702927901,11.3098427455248],[-11.6306531535178,-17.5715716499856,10.6765528188282],[-12.2245284251095,-20.6800950522016,10.9001821783965],[16.3548110455265,0.548025213945113,-14.8426300346905],[14.0785301592101,7.1040658649533,-22.1529649920333],[-15.1410633284024,7.37074847953766,6.9503910914261],[-11.6674666929372,-5.42516571501965,9.17092237543462],[16.3635701948384,-5.69722356468204,-4.36902546734796],[-10.5218090044339,-5.06727153663346,9.12656548231784],[12.7857927198733,1.84503575728926,-1.59646501595332],[-18.901514542962,-11.7846223001346,11.140584786227],[8.99680391208717,12.3827111555316,-11.871762676842],[-15.0615201375797,4.84976231918815,7.64975105180456],[-18.8655370259853,6.72842465328868,7.79443797371472],[9.7212337523315,15.0621350826217,-22.3288705237477],[11.6415339196233,-3.38103654528026,3.92096356557969],[8.03846333606521,14.9777738644422,-15.1419010260182],[14.52241525057,0.333866973258611,-3.84887086550675],[-9.78086540576972,9.55524670003608,6.12979532692067],[7.09009268945529,13.4191395156541,-9.1575228321039],[-14.1780438467988,-21.2378603185116,10.8827345390769],[9.97928112123607,4.91416349937744,-0.920234637278502],[-20.0776116758907,-15.2710954872235,11.8756029039657],[11.5857259708506,-6.32231947589913,4.74457693698648],[-1.2460368000569,9.47773281954128,4.19240267561546],[-19.102317396912,-10.132252944068,10.7125561045303],[14.2896335854191,4.98808053605769,-14.2473599781967],[14.1785041867958,6.04097574012521,-22.0437494428388],[16.4533013510248,-0.314502400457347,-13.8882310497795],[7.19715099238789,10.8497002276094,-4.49267999884099],[-5.89281956521186,1.82966420276375,7.97298891897448],[-26.5311306200576,-2.02955281808608,13.0476373092041],[-1.33374004054834,16.319180734312,-1.71169872758194],[-23.096988641599,-8.70938683904952,12.4116056748304],[-23.3388409155709,-8.16240604283765,12.4175791950054],[6.9074058089352,17.4449745817317,-16.5523978535068],[-26.2901661981409,0.451658716983383,12.665471377118],[12.6761137756573,-3.85929101503132,3.32516722958604],[15.4462812467142,-0.699225962620888,-5.72236750528363],[11.2194125383272,3.42100517636841,-0.892108384245361],[-11.7394295991986,-7.83121615452204,9.52914349003554],[-13.1376090309293,7.27260508382353,6.9581307093],[-1.09288386816677,-9.7755795674577,10.2872504026942],[18.4485409450033,-6.51725573697674,-12.9051337654138],[10.9438273127644,8.53417482875409,-7.93715264809498],[9.66006322266893,15.3105441286722,-22.1448458283666],[16.2676638435792,0.00847040399903662,-14.6724736017223],[-8.01622483236467,-21.8477838747535,10.8885244262194],[14.069560310057,2.72794264057169,-5.80570368632009],[-8.16639777643578,2.36199678154253,8.04474420546275],[3.63210512222386,5.47288558312479,3.55686758759362],[12.9802396277512,8.79863719441886,-22.1568146099414],[-19.4869534508291,6.79786449515198,7.18200723575291],[0.5789456910053,-7.28953499235114,9.53818334828488],[-24.1916893462013,0.443113750105222,11.264261958727],[6.30349148997384,10.3157808320745,-2.65727567510423],[-20.3020092611189,2.95230457850838,8.87454697488851],[-24.0911832684669,-5.34281463129577,11.9943926062723],[10.1868643955681,-4.09557828655838,5.2119807941084],[-16.3784601235962,5.11197907199741,7.64504509848697],[-8.46710361648987,15.360153588539,2.93415410085402],[11.631506159529,5.89903071870656,-4.90702297159107],[16.0421892379651,-8.22611000135665,-2.83575377181408],[17.8692190159241,-6.70169952735301,-9.88617299835727],[-18.1914589954887,-13.2007578595212,11.069211245052],[-1.40392874219827,16.1201850470748,-0.889990505913509],[16.4423758114208,-0.398146155030393,-24.192220020301],[-12.0555954466694,8.85533844551155,6.46342840536338],[18.4762777565209,-5.86812693340704,-14.7402907855343],[-4.39225499720142,4.61752549470523,7.20563408728544],[18.3758843638967,-6.26684447356284,-15.3028557218633],[-23.2134534179194,-5.47852058889346,11.3396839728198],[1.85809238987892,4.48605529166495,4.97144883055167],[18.2584882334182,-6.47797166762954,-14.5147810312125],[12.7130247935711,9.98650126774316,-22.7580228150448],[-6.15983828156771,-18.9440811772721,10.9344854279877],[9.90506346599314,12.9822265808333,-17.135828022937],[6.5058046407752,17.2858210389245,-15.8057550887872],[12.8437185745429,-1.68719070922916,1.62792163496203],[16.2228295311349,0.677517372100527,-20.1036457618453],[8.56444115480356,13.9536669710081,-14.4142330516098],[11.6139863817044,7.60413530270213,-7.73829709276127],[16.6177598950665,-6.85710557529163,-4.39817019125553],[-10.3974697263677,-24.7732467606715,11.1493877707329],[-24.4947931864009,-5.68155950683952,12.5686448307532],[9.19098284755925,15.7531829539688,-21.2413352200374],[16.6141024715066,-7.84159578084131,-3.7880146842539],[16.6609505587437,-0.365375403631672,-15.6935278200577],[-18.8683826335308,-14.7703989324539,11.8156809558058],[16.8213817925845,-0.89144334997821,-19.0770266306292],[6.15110304419175,18.2025274697888,-16.3036009937958],[-11.489689478487,-21.0602855478009,10.4962124169076],[17.8461004047814,-4.32921915426857,-14.1216368242252],[-1.247119715063,-5.13161444416352,9.36885027250222],[-6.80502179514432,4.54501475444259,7.48907547075944],[-2.62156217557572,6.67647560990819,6.2189300559553],[8.77512014036426,16.302880780657,-21.8115662539419],[-18.0243096370755,-9.91864681392957,10.4032320040332],[15.2283125587908,3.73006036455204,-23.1192127417146],[12.2473456942884,-5.93528035820528,3.98969219383148],[-23.591147724528,-4.34080997337532,11.7039387102372],[-4.15386075193859,2.60239007310524,7.63839384222674],[-19.8671786990222,-2.26938700513553,9.68238384064279],[-19.8681843978467,-10.3078692917223,11.1206497041448],[-11.5317638232664,-22.5115022595526,10.6286742868598],[13.3575937856999,5.95434100515471,-10.5033687242294],[-3.28093182389162,-19.1440525500822,10.9891988141392],[-11.7181378943515,-6.94094048260185,9.38471068883376],[0.104080761944347,-13.1625180902402,10.6471880517719],[17.485706987842,-2.9565098400213,-16.401813285501],[10.7036559802127,12.8792625271587,-21.2053891290123],[14.110826680281,4.54574459186677,-10.6408033488066],[-8.18045611241262,3.48103348016424,7.8153181622736],[-2.0651484600912,12.3163491971514,2.73132779705861],[13.7431137970567,7.45967120838081,-23.1840553738413],[17.0823511320007,-1.56222663174359,-23.5598367068102],[-16.1354250495608,6.13222076134861,7.31757117739674],[15.7899827556611,1.61612157384369,-21.8490986246611],[14.3226316500869,1.00812368018659,-3.96333035831713],[10.4535287806435,6.02573348418445,-2.90250670443019],[-11.6921768669304,8.1204555585185,6.67231404242232],[-13.4529253952091,11.882013936951,5.51190856688083],[16.9864542969904,-1.35447574580575,-16.3664165379229],[15.6573724637742,-8.04025586696688,-1.43767100360581],[4.25065586305731,12.3558559251411,-2.59809505109871],[-25.642526438678,0.90025711337066,11.9877351271285],[3.23554139264897,14.3889163295206,-3.91228073758879],[-9.93868473199456,-2.26922590337816,8.77680759854065],[15.0598206021948,3.31547877994116,-22.7380320492918],[-14.7574040040681,-9.97706178061578,9.97143706393244],[-2.57551713752431,14.2754680913855,1.57092477742295],[-12.23805121546,-21.5036110516347,10.4988118619073],[5.5278574163183,10.1884685786798,-1.63218045262984],[16.1079992347255,1.04943357847381,-22.7346309025543],[4.95241519190069,12.9713934943946,-4.22269481990529],[-18.8494014302178,3.66314141566457,8.30270864316552],[-20.2647245922876,-14.8985367215093,12.6209836927101],[-13.6786221055873,-23.2003476014797,11.0801093569586],[-3.17010415373628,15.1921524670484,1.11048977933851],[-0.360313645360174,-11.95704895446,10.5634909876851],[15.7836247088441,2.02619091259101,-21.8023898801603],[14.8360561564535,3.99906697235057,-15.1807323201174],[17.6466093501636,-3.58345034493071,-18.8508485545608],[12.2338448168746,-9.27338160529688,4.53379176538603],[3.40563618391136,-14.5670704742502,9.86612875010267],[11.7689043635706,10.6337538970568,-20.3704057193566],[3.99357135994062,14.9767658473447,-5.67053078484628],[-22.0014471682108,-4.68814455074068,10.954570751646],[15.1494463611712,1.46801865413441,-7.77577908233496],[14.3218874339437,5.75210247912643,-22.0976916551996],[9.16089627762086,9.21421781506919,-5.24199767978733],[-11.7463712885792,-16.7766902649583,10.6445191155283],[16.872528847419,-0.567586472926671,-23.6260786013888],[-17.7734802399906,7.36000170244514,6.97479247046329],[6.91920541077212,16.0011860070247,-13.963912473685],[-18.6914256888182,-1.15460439696638,9.02115702264531],[17.0171900213833,-1.37380416000727,-18.927921710143],[11.3472262276194,13.205749662099,-22.9688236053223],[-11.7313261832709,1.75480858758935,8.20915414447121],[4.24507827320633,6.93263108556264,2.18013047405597],[14.228216695485,4.84448970957751,-12.9118709837429],[-12.423324481542,-23.2263544015162,11.2138209409071],[17.8909357638835,-6.40275770941346,-11.4603307719591],[-22.2600572531909,-4.62865050294274,11.0659910031994],[-10.5005136383695,-16.7157604221351,10.65805245664],[-9.35754767511923,0.791454701541791,8.35125247898472],[18.1332277035387,-6.22322843426572,-11.2718134364094],[-3.13411004559557,14.3339662690649,1.81590524348327],[-9.59265365089231,-15.5261133716323,10.6418280401698],[10.8409374325307,13.7260627487332,-21.5658972023966],[-14.188982628393,11.4265788918091,5.637254579899],[-3.43079566011172,-9.25763029789671,10.141093180563],[-26.5177653037433,0.301532607203685,13.3118905688957],[13.2550984345332,0.111376835515718,-0.587854617490383],[9.11172029930039,9.68565281176066,-5.76937811512847],[9.73907007272863,13.029447270484,-16.5492313154929],[-21.7795522963699,-2.08236624085676,10.4020252593702],[17.5678887318482,-3.80623609366242,-12.5649912699532],[17.9155026842669,-4.79621466448343,-13.2702404850555],[13.2820905094429,-1.1114580036881,0.474579234743342],[0.956307880343345,3.42416450938194,5.87790949144686],[8.10095408707216,9.54146947988065,-4.04077853225886],[10.1996712358527,13.9756577653511,-21.5459876575998],[5.27317431296587,7.8890275350662,0.686350552033818],[-4.12728359776209,15.6356567793041,1.18523044318386],[14.5684699277218,1.90421331667515,-6.09458423140052],[13.8704723356491,5.45218796872154,-12.3552965969588],[-0.980012170623154,15.4351384959296,-0.761160100665356],[-17.8801890327337,-10.5634726932369,10.4638824917698],[16.7275832134362,-5.99335439601984,-5.35517719903347],[11.6397099340213,2.79317090067314,-0.807179096091648],[5.1650648456589,14.3617487557434,-6.56208235810945],[-23.701220322271,1.34686218593857,10.6803736576654],[-3.63831617020679,8.22438957594284,5.79912047777943],[4.79305236741498,8.40953886752352,0.631289237707585],[-19.0443288862684,6.02065280898198,7.54521554654999],[-12.7946993894554,-22.5530330298841,10.5661457214779],[11.7635421700496,-8.41704923388088,4.92583182334485],[-19.2431201813527,-2.63343374277437,9.49822301818393],[17.6774184596293,-3.7692877766433,-14.4304670763528],[16.0258341839307,1.03313719162395,-14.2891045604963],[14.4336347217464,4.9470331150913,-15.7944612200959],[-0.672470416871888,-11.308914938599,10.5304586102225],[16.3251157507389,0.497155835420154,-17.623115132478],[-9.9592009956486,-21.5149183814249,10.7283770506938],[-25.2226648841488,-1.15755921126983,11.990432999509],[12.8138283510312,-0.461404595221244,0.674494648849674],[-9.22041044835455,-1.69308673422479,8.72020383231161],[-0.0814183664794223,-9.28720548915687,10.1071811088784],[-18.9022793515432,3.43801448860545,8.36190158061675],[1.69374290973771,-15.2874844102197,10.4835866466421],[-10.6010975449613,-21.5705951397402,10.8336512760845],[5.17377962416855,12.6617237290174,-4.10854216012697],[-9.5020784579239,0.404701548574475,8.41927251422009],[-13.1470815877238,7.91415000458343,6.77726930234026],[-5.68986557399408,-21.0070885813951,10.972682530351],[15.755240721486,-8.13847037237841,-1.93137729673986],[9.5988931885558,13.3569192767478,-16.8011655289523],[-10.9522813475032,14.1218757086479,4.14265872491757],[-8.96711888831839,12.3452586968222,4.83724868353848],[16.7599946836394,-8.19492473709306,-2.91362934588738],[6.68339314997495,18.5148182290103,-16.587221066529],[-6.45667432984587,-21.2822629722723,10.9468274992128],[15.0102168548921,0.659381414657233,-5.74932527724617],[-12.8618461044228,-16.6083473597653,10.7018064021724],[-1.45190451098165,-16.8769170350361,10.9709222837178],[-17.0603641915076,-4.17602970828221,9.16983986869727],[-20.1507309124611,-5.92595175368174,10.2712233994317],[-5.99572780797965,15.8920097585254,1.71759661688415],[8.82384802543675,9.65856470279068,-5.2451387844973],[13.1634371859332,6.41833791649509,-11.1111581307957],[11.7964723628884,-3.8952964871181,3.91371744558807],[4.18641210903677,15.7477924794117,-7.15571797823232],[7.09666462992629,13.0699786543177,-8.2675759461935],[-19.869811120115,0.114833462355685,9.23219532347672],[-12.3091970370317,-21.4184091265865,11.1200988709431],[16.8505299827886,-6.85826374712858,-5.15777306291585],[1.66773474778767,-8.05303050873732,9.46602453058238],[-20.2948491682083,-6.26916146489129,10.4499046077513],[17.3486625651971,-2.33172394515422,-23.0850113634343],[8.51132072176328,13.755097240923,-13.6457146056741],[9.84691708334366,9.02285986327861,-6.21558631614846],[1.05522583597606,3.87708803640305,5.63186915032395],[6.98603614153985,15.3887550219509,-12.8053637811877],[-13.1439319203426,11.8243903341721,5.34025979293614],[7.20985229704176,12.9861637385306,-8.84475565748431],[-3.21215472236668,-16.5648564986166,10.9806235708871],[-20.9265357625047,-2.55730983537688,10.0651929580064],[-4.23937680069181,-14.3580565281219,10.8328226891161],[14.0287835280548,5.0215507623526,-11.8841476948385],[13.5767551584475,5.74404975997147,-11.3805550187732],[-6.27939597915613,-19.2164979479569,10.9215267098999],[11.5669811749647,8.3017728177011,-9.34044339969742],[-20.1774772878855,-14.2466226842843,12.2480477071288],[-17.3490432053411,6.69193957809817,7.19846801240678],[17.0653774642451,-5.91549632471557,-6.80144452960727],[17.050611277337,-5.90392114040278,-6.74941449149136],[-4.77725412171734,-16.7600980602396,10.9492541950849],[8.79365621809672,9.50147081895102,-4.93743747693951],[-19.6786671876033,-12.3757397043025,11.4849157456373],[13.7118025167131,3.79768645848343,-6.55341007847661],[12.5164649087714,7.14588486119221,-9.9586796184932],[-12.0609869462058,-24.8912586380788,11.0717515365852],[-11.3659930549521,-6.52586762932141,9.32361595856202],[13.6364360142527,1.14150808766577,-2.5223299291608],[-5.16617236579838,14.5806075366309,2.51105516810043],[13.3583112729443,-0.102726492217905,-0.589549576491558],[-17.3106830046123,-3.34726440854302,9.10853958821123],[8.53835201580193,16.3754989912799,-19.9249515953562],[-14.4943143961268,-7.67868158796407,9.53251068860876],[10.8548945227148,13.8925971020685,-22.1528599116307],[12.6227549043482,6.24543140338381,-7.72525843214693],[15.957508310624,1.48011287695429,-22.896360217937],[-14.2941878796397,-21.4727361427886,10.8366359658797],[0.85699889906013,-8.25627929285548,9.7158323658633],[13.2640989040048,8.39368248796968,-21.3131860237614],[7.30897776153091,16.1983912650951,-15.8112275681663],[-9.52672163435947,-16.1397289749448,10.6730132184735],[-10.6609155581788,12.8373923217704,4.81272627441796],[-18.5506588130917,-9.65120040238595,10.3982485731695],[-12.9258948523318,-22.2622488290498,10.9559755464866],[-5.32104485460995,-19.5599785552899,10.9646276346552],[-9.30625972067961,10.5206092678127,5.72633209261631],[-2.24668696302555,16.490811712159,-0.885345765503399],[-4.92728416679315,15.1342353439573,1.96676019849413],[-18.7366446048101,-11.1277661123942,10.9976403533804],[18.3540034196734,-6.56976081131135,-13.5431479897179],[-5.53366124000032,-12.6709842299192,10.5895250285901],[12.0884981400593,-4.38675146749565,3.44324940842189],[12.0989338096833,3.37919782717745,-2.15981743656091],[3.42140075446162,6.65822154993966,2.91712723232054],[-4.77738088113079,5.62541652381368,7.00325033548234],[7.54680707499139,13.395570249965,-8.82104894638688],[-9.94923190494108,12.5716497209249,4.87203490477935],[-19.8271500280861,-15.260874333493,12.4575307997688],[11.9956508177125,-5.16043413519304,4.10411426074218],[5.71330056188073,14.016808215756,-7.06513588525923],[3.25912620958916,6.88705282669835,2.92604127975446],[-0.463968010545741,-16.865299572801,10.9389696740862],[4.5750021440199,15.2263409252909,-6.9503932179952],[12.6781850023256,-3.80464518106578,2.84555486067203],[-11.6009755123121,-24.6671329382325,11.3862549072983],[-17.8740537480048,5.17800947817182,7.74484500874584],[0.617480779839187,-15.2349094947555,10.7447790159952],[0.166231708463125,-9.9139137412528,10.16649534031],[10.4714881833906,13.3889232159938,-20.878356631055],[0.131661752751945,-15.3738871441333,10.6224041267659],[12.1169145652029,7.22773865446375,-8.6109186374716],[10.5739846475915,12.1245130029466,-17.775087604439],[16.0124333523398,-7.68941197172854,-2.34594636310807],[-2.54479725476975,9.46303053694392,4.82796033777505],[12.8569456511012,0.667535491479069,-0.484758939511502],[17.8145370317471,-3.60498579453375,-21.6885130547733],[-10.5693215903692,13.4724889228531,4.49030459613492],[17.2376241796955,-2.06794567419746,-17.2264767863553],[-12.9028793372142,2.77015125601162,8.02136341929123],[-5.12688272788664,16.2066534157902,1.09703916023718],[-4.31074963311137,-18.6290791546018,10.9899623591242],[-8.71438786697624,-2.75970267933688,8.91042306793854],[10.0093655693993,4.61130569600747,-0.589724845870045],[17.1807573107784,-2.24301887060641,-19.6631205702447],[9.1360242448823,12.6976655920681,-13.4358534906502],[-4.61598773010873,-10.8382287788877,10.4140826185769],[-24.0999125459019,-6.8512330723691,12.5771380674877],[11.334315695114,12.9612662375998,-21.2760853302659],[-12.6061060860753,-24.1949809565856,11.248745562965],[-4.04651997681586,1.97781105118812,7.74573725598058],[-6.54599784457073,0.960031048499441,7.99743660050108],[-19.3913667169758,2.70156132062628,8.62594083378661],[-1.78817533811821,-5.21581580479246,9.44100860053736],[10.3387164065421,13.2202992586467,-21.3965806084797],[-3.14396624274244,-6.34925124292654,9.78606839661219],[-22.0733869506063,1.4159959272413,9.93878785358037],[-11.9736619449823,13.4434327876513,4.65867117242012],[10.8694594933718,13.7276895177911,-22.8441915484565],[-23.8181512103017,0.325532389488174,11.3274741398195],[18.0364556317145,-6.44808533457604,-12.3066443366746],[-26.6259597628158,-0.710160663435354,12.3910213845895],[6.73910291768129,17.8986892750291,-16.0672829135772],[16.3968031099609,-8.9938785821326,-2.27360147334208],[8.14744734728619,16.8101068958622,-19.4550927055645],[11.799634174819,-10.559402569833,4.98078886732324],[-13.5276940565442,-5.70596303412756,9.14406494678775],[-2.93522658667452,-9.3420910532099,10.376572531682],[-11.758520569762,-23.8303147297666,10.6832126489109],[-19.9246194596422,5.7100663385762,7.95234216644639],[12.4420503550955,9.66469117904311,-22.1513137397909],[-18.3034770067205,-12.624927081295,10.9799331816002],[6.08906679438887,17.4542164877637,-16.3382013333901],[8.95230525505765,13.3140695227734,-14.2152905421645],[4.95406571651909,15.4826810879954,-8.16173572050466],[-18.4136002195661,-2.05180918914256,9.34136667899684],[4.0720270779598,13.9730165263397,-4.37464269923301],[-26.2331968761666,-2.2536442531209,12.9988544545625],[9.72153555683264,7.74167868278362,-4.02031818503926],[10.2840252509835,4.08032261608072,-0.411127751322849],[-12.1774887351892,-15.5198055288602,10.6109135634042],[-7.96221057558452,-20.8445233892856,10.8654890181481],[10.3228187886365,8.4727320255794,-6.30367110774998],[0.248028516446549,-5.99276574806483,9.24143009116545],[13.9868885196924,5.74375802512637,-15.0194789381803],[-13.0214711191634,-6.45257163031814,9.2290432523128],[-9.20645756529934,-15.3771193453275,10.6469325203756],[-13.2164201975989,-15.5367403926763,10.6326186151297],[-19.4425399492015,-15.5949173072686,12.4275129989545],[-1.25851325577407,9.31332995715268,4.31314065097189],[-19.4624255513955,-15.8404934270052,12.1172185852204],[-25.9397635384751,-0.58052684135657,12.1637909232641],[12.0787467453204,-7.86097285522643,4.48382662245409],[-0.866964044498904,-11.2762477465057,10.5348487370012],[18.0126735779288,-5.29806180645256,-13.7719558312242],[-11.673001902419,11.2265897832737,5.6036511925472],[-20.2605616375105,-4.44055364330142,10.1185690999237],[-19.2659493653266,-2.94368347555258,9.59020549854668],[7.64292055282043,15.0999481592581,-14.1228716057671],[-11.2752319357545,12.6113615878012,5.01215510177648],[-24.1782715342343,-3.94715275090522,11.9777239835372],[10.8424660255202,-11.210256688689,5.64727243483705],[-0.558057713352985,-10.7407201602986,10.4066292757391],[-2.76116661909882,16.396679890533,-0.388381980004644],[2.82648819007815,5.5999157638366,3.89795797460754],[15.8839243540619,-8.79078232530147,-1.97530301233018],[16.6761120346681,-0.0210391360051457,-24.1026855023828],[-17.7927627565171,7.39445253154565,7.34229870123188],[-5.18050305704912,7.81150550439589,6.40727297548979],[17.7646993628587,-3.97710229524866,-14.1605885270862],[3.86393279739069,14.4350648648493,-4.69917265076998],[-6.55788091712615,0.921485012652879,8.38466188889686],[16.6780977510633,-8.74275412949046,-2.86232245021376],[3.52348038025225,5.12730743389303,3.8458049069112],[16.3792070067867,0.0466746227936135,-23.851089094595],[16.6789233124615,-6.46104743788805,-4.85837263451261],[17.7627950474021,-4.1542598910943,-15.116711855851],[-22.9571281694828,-5.08739670921497,11.5639239336458],[16.8303335793155,-0.336341072646943,-24.1981074837926],[15.5267725719706,3.32054378571381,-23.1458262221142],[12.4130621835977,-9.86103278680494,4.31419556137218],[-6.66272073130856,16.1123687294964,1.82087742617199],[-6.80157465946888,1.24707377583021,8.20945466344352],[-9.50829503231113,10.8268298647603,5.60850066138309],[-4.42620749752828,6.32879251641626,6.7461972207051],[-5.54685782387156,15.4936467062531,1.93841202879765],[1.26364504342543,-7.03016106033139,9.30942650166642],[17.4553384487933,-2.94083298952753,-20.1743609539075],[-2.35998531879883,-9.41859915193992,10.2908140825757],[8.6422193239453,17.1360924671295,-21.0769577307953],[-15.428032585036,6.73838962998135,7.18602172278437],[-2.40073439023988,2.6735516885027,7.29828664584038],[-19.6212399391947,6.94081424072432,7.38838704939338],[-22.9552947327996,-6.17059465583727,11.9731290418781],[-3.01456317384557,-8.83063979968112,10.089210129639],[-6.50686468829242,15.0318906636685,2.58272434671905],[-8.5339135457919,15.3890455026943,2.84004772580553],[9.97937135194684,-9.35400542007007,6.36775298925249],[16.5707992838868,-0.159283116794652,-21.2472844724876],[10.7410145537576,13.1473483714863,-23.2483643842549],[-8.67521261215634,-1.57992441348597,8.72463625199622],[-17.4987560512876,7.95899346960484,6.91285289453902],[12.6851509793914,7.20052173172575,-10.9200878462325],[13.1537006563081,-8.648627253254,3.34250300786502],[12.0236929751672,-3.05318067828718,3.40703925611539],[12.5302315341381,7.18158141952641,-10.2455593998764],[18.6403741846602,-6.34132105953365,-15.4369930142721],[-18.0589981967308,-15.6191939923314,11.5798124579383],[-12.6974389913272,-23.7184797941049,10.529016158109],[7.82600628900694,15.9790023987663,-16.8234739933426],[13.815433063925,5.16822967579163,-10.5694193780554],[-25.4172580387447,-1.49335698073193,12.4054936812057],[12.8762082372712,4.7514185935097,-5.75890177701216],[10.7763858535387,-2.65042848973122,4.31099085316141],[16.643630337072,-0.261355388497174,-14.0785899751443],[-12.2952815733932,1.23092335817216,8.28986182059852],[17.3612495115981,-2.3314222498005,-23.1582248039602],[6.5969182940828,18.0330329091802,-17.0062971569376],[-12.9803091030208,10.9423945786453,5.72413086547453],[9.50057878378808,12.2940330032898,-13.5291935142115],[2.48798939046179,-14.045057153773,10.119008720477],[17.0560092005154,-1.58877653887417,-14.5353361561181],[-19.9598966353975,-14.608885714853,11.6619871265579],[-4.29986291227105,7.35968193082191,6.45101035032356],[-0.501301268607185,-6.96689041765858,9.66871054261644],[6.0882014049565,9.80907465197484,-1.84670774914088],[11.5666254891097,8.67508078281323,-10.4182447929242],[5.37207361154517,9.92722762043392,-1.23725802693542],[11.1239001349205,-11.238682435564,5.44646401797917],[-4.52454985967401,14.8437556661356,2.05804940725677],[-4.00719129668696,-15.2346411076354,10.9071419063422],[14.096008860265,1.24962654064059,-3.65794969477711],[15.3993972026939,0.354793363736668,-6.92135129705969],[-1.37633745972354,-6.02248400966727,9.61119319091146],[3.55086686105956,15.5264977617371,-5.83002332409416],[6.05625063208856,10.2127201828065,-2.22845703714192],[17.2276473577495,-1.70373246264243,-22.0668968149745],[-2.01092400407391,15.8555856649542,-0.345925791377883],[12.1969657275505,9.66411375809187,-22.5258178611683],[-15.7878309994564,-4.15205962298304,9.01670675350436],[12.2880108339392,5.40632800015879,-5.53009687117606],[-20.0732271476288,6.32289171932535,7.74212208798271],[-17.313862217639,-16.0314342100043,11.422813924254],[-8.69996680258436,5.40008825052751,7.35447985983838],[17.459961310494,-3.50134033121324,-20.7181326393652],[-16.3732100161302,-3.23161589566494,8.94079288921959],[-2.61686409461337,-16.531320535385,10.9862894759691],[12.2435184984418,2.54626348890092,-1.37608450949861],[-11.092636897228,3.17968867690422,7.95251296347316],[13.9059062480253,2.06655712178999,-4.27025740614236],[7.33434103364474,13.4928565393994,-9.50897480901329],[-4.01452292484128,-18.8470365637111,10.9490859039927],[-10.7847021445115,-15.8355508611002,10.6315132486202],[-3.35452167150504,-15.4823266384898,10.9364418500218],[13.9343758759169,5.77716717286818,-14.774938045745],[12.0674329889485,2.33340057450227,-0.959888459711062],[16.0253123329423,1.37799728397927,-21.4861585362553],[10.368411265103,12.9267646831571,-18.9499504722841],[-13.024346476507,-7.94181857329387,9.53377396815498],[-11.6149366175176,-22.3273291948499,11.2740853666944],[-19.4714789002976,-14.783335120881,11.6806516174601],[-6.62102024276143,-11.6488010359224,10.4167180075939],[15.3043825822049,1.02405001925498,-7.61196688146416],[10.9110195062687,11.2581941051983,-16.7040134786938],[14.2734844323851,1.96161114143755,-5.12265796053685],[7.87302583501274,11.7671540633616,-7.17281707256047],[-11.8332827834324,-24.2986712986761,11.4304354955942],[10.3571770585573,13.5673518042995,-22.2693983594006],[16.831645312483,-0.990169535380801,-15.0520509738789],[-2.80129196630746,-7.96411574029292,10.0215726147889],[-20.3008662400288,-11.9334627554409,11.6550024397602],[12.4816813158943,1.51935723947177,-0.730906279406453],[17.2608046438611,-2.09812968903392,-18.6582146758362],[-22.7580939637042,1.58421048132821,10.2131476179656],[-10.4867067539995,-20.3185214578114,10.6858774167477],[1.58079410329224,-14.9235646026024,10.4356985411713],[-5.52848599161496,0.981244097689196,8.12227101067296],[-23.9134580579736,-5.17996120632547,12.3707503380189],[11.2857496584125,10.565594105818,-16.7440150491929],[-13.1563549460696,-7.42538802878413,9.42509602805367],[-14.4371403997291,11.7067681999357,5.82710819907697],[-8.62332953891555,13.4396604204801,4.16439975684583],[-1.60017581836198,11.0462938766527,3.37085233576541],[-24.4112085698852,-4.64869449096248,12.3619126523171],[4.89839911286725,14.300492846533,-6.07449383397639],[16.8290081660291,0.310923407782671,-15.0019190000588],[-2.59801965252676,-14.4030032040008,10.8581204044472],[-4.58968881310606,-15.5672499250423,10.9137825508534],[-11.014270005789,-18.1208335436857,10.6882041768921],[11.8972613506192,-1.27077605378699,2.51718239687407],[0.318079114510494,-7.33539406772952,9.63797969371467],[10.3252789456614,13.8495157857986,-22.8026110600576],[-3.86671444149691,-10.4527423091015,10.4100105396708],[-15.8667812489734,5.15688759766242,7.61875212976098],[6.28480190545702,13.7761127678768,-7.82974104734699],[17.4073198167173,-2.41310839635912,-22.1771379364029],[5.05333563658448,13.7135223216524,-5.4983551203262],[16.4900868196774,0.045796668396088,-19.0920977235319],[-2.6195703375745,8.81799754630504,5.20657076784335],[8.61055238912974,17.0220740072284,-21.802364503551],[13.6137436682423,2.07190362522535,-3.59129435996406],[14.1039486316653,3.08225116636694,-6.45108457169027],[-10.1311852175769,12.1816210665529,5.07130558850292],[8.39481611635399,14.4850671170376,-15.1820351719719],[10.3157296997346,-7.19073650990678,5.91382359274811],[-18.5070689070299,-14.9564316802029,11.6361978531581],[-10.255944834956,1.46376884511733,8.25568384340469],[-1.81036290895697,11.2780083643227,3.31259135529249],[-11.3478846461176,1.80241029705974,8.20560438048039],[10.7194182181295,12.563530494078,-21.8515708376101],[-16.6420839285506,5.60163723068233,7.55864044016613],[-2.91348110839689,-5.90563830778526,9.67953857260015],[-0.83276663463107,16.2876627193026,-1.88571489356549],[10.7599137498129,-5.66801080467744,5.25003867840966],[-9.49534231087067,2.83181770961505,7.99746515880582],[9.01610795592284,12.8035236100596,-13.0302250858979],[-17.6605109410293,-9.3933920023731,10.2565945188113],[-7.21773926493432,13.5562802837043,3.81155030467275],[-25.0806177941764,-2.64054964403983,12.3647327233489],[13.0223783296478,-3.23403168991187,2.30650582349506],[7.82612232196396,12.5490155478384,-8.74282163166216],[18.5744510384215,-6.48172604703045,-14.7092624550202],[-0.802853653325434,3.75894939592426,6.47156409345855],[9.67268045268163,-7.97959941476419,6.43250841417496],[12.6326360740072,10.2200579594325,-23.0912684717532],[-24.8502421414118,1.7762966579244,11.2467308214627],[0.161969121488406,-14.4789202036592,10.7286743362189],[-8.84615007193106,-0.935426192464048,8.61069440686271],[-21.9996667485317,1.57899005700631,9.88405369310873],[-9.2060026271514,-16.0047000705529,10.6876731712094],[5.10935937603812,9.71524335839271,-0.777051899001368],[-11.2276329169844,-24.3610726688227,10.9795206949944],[13.4266437187053,7.38463677916831,-22.326710540933],[3.54786764157644,-13.3701189265221,9.68213510736448],[13.0288797288133,6.17208226649007,-9.09691780544441],[4.95425028396817,12.089077071212,-3.09837973741734],[-5.55961595829154,-13.4323446279409,10.677062913894],[0.0974039749391978,-9.43703108661243,10.110872118247],[16.8461228608673,-1.0108385365979,-20.2770854754245],[6.65922255549074,13.6200498122903,-8.46443766604942],[-24.4010061007989,-2.4198073613674,11.8907802147253],[-9.88187108164657,-23.5748173001786,10.9930099788246],[-3.64190524592565,-14.7674234245375,10.8905705144182],[-6.36466583899665,-11.4349073953224,10.4064585304806],[-0.397228387387661,-12.4778153662854,10.6289866347609],[-0.72170309370608,2.42912521032656,6.86989980860055],[-15.8116517075526,6.08430353716897,7.40813223483431],[-3.71046972838565,7.44307023061795,6.12559443373499],[-8.8493028598123,-0.579263586688993,8.56401932771895],[9.42625738198111,11.2270073771273,-10.0946565387008],[8.38264630604063,9.55201208885368,-4.37291928171643],[3.79440683509368,15.8583935800481,-6.68308354523422],[-16.8602126772862,-2.76605166149878,8.94992021192878],[12.992439720781,-7.83152278100962,3.44549870729545],[17.2262446690122,-2.17168376428557,-13.7639487444566],[16.416098924294,-8.84476518376163,-3.12959009682614],[15.7723523808448,2.09507948220042,-23.5224176577751],[14.8774124901013,4.4152432697678,-22.6784447475172],[-14.0967600445925,-4.80321388655094,9.02610089314861],[-27.0651746801995,0.140474705040635,12.8559713195979],[-10.3543720556403,-3.99651994856728,9.04870230867484],[12.6565355089821,-10.4832731234473,3.96770210203592],[11.4883770844496,-7.55487371784253,5.02882585416002],[4.79903553481515,13.3271413654691,-4.51522602534845],[-24.2526200308957,0.802606904327896,11.7052483485226],[17.8666143012566,-3.66607515518879,-20.8204457699379],[9.41616352495779,8.86011716639094,-5.04931349280545],[15.1894334504451,3.63196993699388,-22.3157419548923],[13.4259199462599,7.0374289276017,-21.9529621194612],[9.23272360436284,13.5070862825983,-15.7923467981084],[18.1655853433384,-5.67669401838192,-12.4213519099091],[-1.06331532011284,-15.6374327958072,10.9001200942965]],"center":[2.15161222172355e-16,2.45137243837235e-16,-2.57571741713036e-16],"scale":[42.5951554437466,42.5951554437466,42.5951554437466],"colnames":["tSNE1","tSNE2","tSNE3"],"rownames":[],"group":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"levels":[""],"extraAxes":null,"extraAxesNames":[],"lineFrom":[],"lineTo":[],"lineColors":[],"axisColors":[],"levelColors":[],"colorVariation":0.3,"pointSize":1,"crosstalkGroup":null,"crosstalkKey":null,"state":null},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
