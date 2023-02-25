@@ -1,9 +1,11 @@
 ---
 title: "Can the tSNE results be reproducible?"
+author: Jayani P.G. Lakshika
 date: "2023-02-05"
 categories:
   - tSNE
 editor: visual
+image: feature.png
 ---
 
 If you are an R user struggling to access **HARPS GTO sample dataset** and have the question that **Can't we reproduce the t-distributed stochastic neighbor embedding (tSNE) results that already exist?** In their mind, this blog is for you. Today, I will introduce my workflow of accessing processed data from original data, downloading the processed data, and data processing to initialize cluster labels and show my surprising findings on reproducing tSNE results.
@@ -243,7 +245,7 @@ data_with_cluster_label <- bind_rows(actual_tsne1, actual_tsne3, actual_tsne5, a
 tSNE_plot_actual <- data_with_cluster_label %>%
   ggplot(aes(x = X_tsne_teffcut40, y = Y_tsne_teffcut40, color = cluster)) +
   geom_point(aes(shape=cluster, color=cluster)) +
-  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) + ggtitle("Visualization from author's results by tSNE") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") + coord_fixed()
+  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) + ggtitle("Visualization from author's \n results by tSNE") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") + coord_fixed()
 ```
 
 ```{r}
@@ -292,7 +294,7 @@ tSNE_df_plot <- tSNE_df %>%
              y = tSNE1,
              color = df$cluster)) +
   geom_point(aes(shape=df$cluster, color=df$cluster)) +
-  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) +  ggtitle("Visualization from generated results by tSNE") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") +
+  scale_shape_manual(values=c(16, 5, 5, 13, 8, 15, 16, 15, 10, 17, 24, 25, 17, 17)) +  ggtitle("Visualization from generated \n results by tSNE") + xlab("t-SNE X dimension") + ylab("t-SNE Y dimension") +
   theme(legend.position = "none") + coord_fixed()
 
 

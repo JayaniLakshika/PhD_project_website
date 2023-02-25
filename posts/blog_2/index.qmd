@@ -1,9 +1,11 @@
 ---
 title: "How do we set up a Python virtual environment in the R shinyapps.io server?"
+author: Jayani P.G. Lakshika
 date: "2023-02-09"
 categories:
   - Technichal
 editor: visual
+image: feature.png
 ---
 
 Today, I will introduce what are the initial steps that you need to follow when setting up a Python virtual environment in R for the shinyapps.io server.
