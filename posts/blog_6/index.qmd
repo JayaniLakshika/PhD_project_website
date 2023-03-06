@@ -1,0 +1,1152 @@
+---
+title: "Is neighborhood parameter really matter in non-linear dimensionality reduction (NLDR) techniques?"
+date: "2023-03-06"
+author: Jayani P.G. Lakshika
+categories:
+  - NLDR
+format:
+  html:
+    code-fold: true
+editor: visual
+image: feature.png
+---
+
+In this blog post, I will explore neighborhood parameters of t-SNE, UMAP, PHATE, PaCMAP, and TriMAP and compare the results with some simulated data sets.
+
+First of all, let's identify what is meant by a neighborhood parameter of an NLDR technique. $\color{red}{\text{The neighborhood parameter represents the number of close neighbors each point has}}$. In each NLDR technique, different naming is used as a function parameter. The following table shows more details.
+
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| NLDR technique | Neighborhood parameter | Explanation as in function definition                                                                                                            | Calculation or default value                                                                                                                                                         |
++:===============+:=======================+:=================================================================================================================================================+:=====================================================================================================================================================================================+
+| t-SNE          | `perplexity`           | This value effectively controls how many nearest neighbours are taken into account when constructing the embedding in the low-dimensional space. | Default is 30 and should not be bigger than `3 * perplexity < nrow(X) - 1`                                                                                                           |
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| UMAP           | `n_neighbors`          | The number of approximate nearest neighbors used to construct the initial high-dimensional graph.                                                | Default: 15                                                                                                                                                                          |
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| PHATE          | `knn`                  | Number of nearest neighbors on which to build kernel.                                                                                            | Default: 5                                                                                                                                                                           |
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| PaCMAP         | `n_neighbors`          | The number of neighbors considered in the k-Nearest Neighbor graph.                                                                              | Default to 10 for data set whose sample size is smaller than 10000. For large data set whose sample size (n) is larger than 10000, the default value is: `10 + 15 * (log10(n) - 4)`. |
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| TriMAP         | `n_inliers`            | Number of nearest neighbors for forming the nearest neighbor triplets.                                                                           | Default: 12                                                                                                                                                                          |
++----------------+------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+: **Table1: Neighborhood parameter of t-SNE, UMAP, PHATE, PaCMAP, and TriMAP**
+
+## The default value is always not good.
+
+Let's start with a simple example. To make things as simple as possible, I'll consider two clusters in a 2D plane, as shown in @fig-fig1.
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+library(readr)
+library(langevitour)
+library(dplyr)
+library(Rtsne)
+library(umap)
+library(phateR)
+library(ggplot2)
+library(reticulate)
+library(reshape2)
+library(gridExtra)
+library(grid)
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+use_python("~/miniforge3/envs/pcamp_env/bin/python")
+use_condaenv("pcamp_env")
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig1
+#| fig-cap: "Original data of two clusters in a 2D plane." 
+
+set.seed(202303001)
+df1 <- tibble::tibble(x1=rnorm(100, mean = 1, sd = 0.05), x2=rnorm(100, mean = 0, sd = 0.05))
+df1$class <- rep("Class 1",100)
+
+df2 <- tibble::tibble(x1=rnorm(100, mean = 0, sd = 0.05), x2=rnorm(100, mean = 1, sd = 0.05))
+df2$class <- rep("Class 2",100)
+
+df_2 <- rbind(df1, df2)
+
+df_2_with_label <- df_2 %>%
+    ggplot(aes(x = x1,
+               y = x2, color = df_2$class))+
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1)
+
+df_2_with_label
+```
+
+First, compare the results of t-SNE, UMAP, PHATE, PaCMAP, and TriMAP with the default value of the neighborhood parameter. @fig-fig2 shows the 2D embedding visualization of considered NLDR techniques.
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig2
+#| fig-cap: "2D embedding by t-SNE, UMAP, PHATE, PaCMAP, and TriMAP" 
+data_pca <- df_2 %>%
+  select(where(is.numeric))
+
+# ## tSNE
+# 
+# data_pca <- df_2 %>%
+#   select(where(is.numeric))
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# tSNE_fit <- data_pca %>%
+#   Rtsne(perplexity = 30)
+# 
+# tSNE_df <- tSNE_fit$Y %>%
+#   as.data.frame() 
+# names(tSNE_df) <- c('embedding_1', 'embedding_2')
+# tSNE_df$type <- rep("tSNE", nrow(data_pca))
+# 
+# ## UMAP
+# 
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# UMAP_fit <- data_pca %>%
+#   umap(n_neighbors = 15)
+# 
+# UMAP_df <- UMAP_fit$layout %>%
+#   as.data.frame()  
+# names(UMAP_df) <- c('embedding_1', 'embedding_2')
+# UMAP_df$type <- rep("UMAP", nrow(data_pca))
+# 
+# ## Phate
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# tree_phate_fit <- phate(data_pca, 5)
+# 
+# PHATE_df <- as.data.frame(tree_phate_fit$embedding) 
+# PHATE_df <- PHATE_df %>% select("PHATE1", "PHATE2")
+# names(PHATE_df) <- c('embedding_1', 'embedding_2')
+# PHATE_df$type <- rep("PHATE", nrow(data_pca))
+# 
+# ## TriMAP
+# 
+# source("functions_tri_hex_TriMAP_without_pc.R", local = TRUE)
+# source_python("Fit_TriMAP_code.py")
+# 
+# n_inliers_n <- as.integer(12)
+# n_outliers_n <- as.integer(4)
+# n_random_n <- as.integer(3)
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_TriMAP_data(data_pca, tem_dir)
+# 
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# Fit_TriMAP(as.integer(2), n_inliers_n, n_outliers_n, n_random_n, path, path2)
+# 
+# df_TriMAP <- read.csv(path2)
+# names(df_TriMAP) <- c('embedding_1', 'embedding_2')
+# df_TriMAP$type <- rep("TriMAP", nrow(data_pca))
+# 
+#     
+# ## PaCMAP
+# source("functions_tri_hex_PaCMAP_without_pc.R", local = TRUE)
+# source_python("Fit_PacMAP_code.py")
+# 
+# knn_n <- as.integer(10)
+# init_n <- "random"
+# MN_ratio_n <- 0.5
+# FP_ratio_n <- 2.0
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_PacMAP_data(data_pca, tem_dir)
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+# Fit_PaCMAP(as.integer(2), knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+# 
+# df_PaCMAP <- read.csv(path2)
+# names(df_PaCMAP) <- c('embedding_1', 'embedding_2')
+# df_PaCMAP$type <- rep("PaCMAP", nrow(data_pca))
+# 
+# expample_1 <- bind_rows(tSNE_df, UMAP_df, PHATE_df, df_TriMAP, df_PaCMAP)
+# expample_1
+# write_csv(expample_1, "Example_1.csv")
+
+example_1 <- read_csv("Example_1.csv")
+
+expample_1_with_label <- example_1 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = rep(df_2$class, 5))) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~type, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2")
+
+expample_1_with_label
+
+```
+
+According to @fig-fig2, the 2D embedding plots show the two clusters, although with very different shapes. With PHATE, TriMAP, and UMAP, the local structure dominates. Also, clumps (random noise) exist within each cluster in t-SNE and PaCMAP.
+
+Let's consider more complex examples. First, I'll evaluate five Gaussian clusters in 4D, as shown in @fig-fig3. Distances between clusters and cluster size are the same in this example.
+
+```{r , message=FALSE, warning=FALSE, comment=NA}
+#| warning: false
+#| message: false
+#| label: fig-fig3
+#| fig-cap: "Original data of five Gaussian clusters in 4D." 
+
+set.seed(202303002)
+df1 <- tibble::tibble(x=rnorm(100, mean = 0, sd = 0.05), y=rnorm(100, mean = 0, sd = 0.05), z=rnorm(100, mean = 0, sd = 0.05), w=rnorm(100, mean = 0, sd = 0.05))
+df1$class <- rep("Class 1",100)
+
+df2 <- tibble::tibble(x=rnorm(100, mean = 1, sd = 0.05), y=rnorm(100, mean = 0, sd = 0.05), z=rnorm(100, mean = 0, sd = 0.05), w=rnorm(100, mean = 0, sd = 0.05))
+df2$class <- rep("Class 2",100)
+
+df3 <- tibble::tibble(x=rnorm(100, mean = 0, sd = 0.05), y=rnorm(100, mean = 1, sd = 0.05), z=rnorm(100, mean = 0, sd = 0.05), w=rnorm(100, mean = 0, sd = 0.05))
+df3$class <- rep("Class 3",100)
+
+df4 <- tibble::tibble(x=rnorm(100, mean = 0, sd = 0.05), y=rnorm(100, mean = 0, sd = 0.05), z=rnorm(100, mean = 1, sd = 0.05), w=rnorm(100, mean = 0, sd = 0.05))
+df4$class <- rep("Class 4",100)
+
+df5 <- tibble::tibble(x=rnorm(100, mean = 0, sd = 0.05), y=rnorm(100, mean = 0, sd = 0.05), z=rnorm(100, mean = 0, sd = 0.05), w=rnorm(100, mean = 1, sd = 0.05))
+df5$class <- rep("Class 5",100)
+
+df_2_n <- rbind(df1, df2, df3, df4, df5)
+df_2_n <- df_2_n %>% rename(x1 = x, x2 = y, x3 = z, x4 = w)
+
+data_pca_n <- df_2_n %>%
+  select(where(is.numeric))
+
+langevitour(data_pca_n, group = df_2_n$class, levelColors = c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a"))
+```
+
+Let's visualize 2D embedding with default neighborhood parameter value.
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig4
+#| fig-cap: "2D embedding by t-SNE, UMAP, PHATE, PaCMAP, and TriMAP" 
+
+# ## tSNE
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# tSNE_fit <- data_pca_n %>%
+#   Rtsne(perplexity = 30)
+# 
+# tSNE_df <- tSNE_fit$Y %>%
+#   as.data.frame()
+# names(tSNE_df) <- c('embedding_1', 'embedding_2')
+# tSNE_df$type <- rep("tSNE", nrow(data_pca_n))
+# 
+# ## UMAP
+# 
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# UMAP_fit <- data_pca_n %>%
+#   umap(n_neighbors = 15)
+# 
+# UMAP_df <- UMAP_fit$layout %>%
+#   as.data.frame()
+# names(UMAP_df) <- c('embedding_1', 'embedding_2')
+# UMAP_df$type <- rep("UMAP", nrow(data_pca_n))
+# 
+# ## Phate
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# tree_phate_fit <- phate(data_pca_n, 5)
+# 
+# PHATE_df <- as.data.frame(tree_phate_fit$embedding)
+# PHATE_df <- PHATE_df %>% select("PHATE1", "PHATE2")
+# names(PHATE_df) <- c('embedding_1', 'embedding_2')
+# PHATE_df$type <- rep("PHATE", nrow(data_pca_n))
+# 
+# ## TriMAP
+# 
+# source("functions_tri_hex_TriMAP_without_pc.R", local = TRUE)
+# source_python("Fit_TriMAP_code.py")
+# 
+# n_inliers_n <- as.integer(12)
+# n_outliers_n <- as.integer(4)
+# n_random_n <- as.integer(3)
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_TriMAP_data(data_pca_n, tem_dir)
+# 
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# Fit_TriMAP(as.integer(2), n_inliers_n, n_outliers_n, n_random_n, path, path2)
+# 
+# df_TriMAP <- read.csv(path2)
+# names(df_TriMAP) <- c('embedding_1', 'embedding_2')
+# df_TriMAP$type <- rep("TriMAP", nrow(data_pca_n))
+# 
+# 
+# ## PaCMAP
+# source("functions_tri_hex_PaCMAP_without_pc.R", local = TRUE)
+# source_python("Fit_PacMAP_code.py")
+# 
+# knn_n <- as.integer(10)
+# init_n <- "random"
+# MN_ratio_n <- 0.5
+# FP_ratio_n <- 2.0
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_PacMAP_data(data_pca_n, tem_dir)
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+# Fit_PaCMAP(as.integer(2), knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+# 
+# df_PaCMAP <- read.csv(path2)
+# names(df_PaCMAP) <- c('embedding_1', 'embedding_2')
+# df_PaCMAP$type <- rep("PaCMAP", nrow(data_pca_n))
+# 
+# expample_2 <- bind_rows(tSNE_df, UMAP_df, PHATE_df, df_TriMAP, df_PaCMAP)
+# expample_2
+# write_csv(expample_2, "Example_2.csv")
+
+example_2 <- read_csv("Example_2.csv")
+
+example_2_with_label <- example_2 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = rep(df_2_n$class, 5))) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~type, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2")
+
+example_2_with_label
+
+```
+
+Five well-separated clusters are in low-dimensional space, with different shapes in each NLDR technique (see @fig-fig4). The next question that comes to your mind is whether the distance in high-dimensional space preserves in low-dimension (see the blog).
+
+Until now, we considered examples only with clusters. Let's see what happens to a 2D curvilinear in 4D space.
+
+```{r , message=FALSE, warning=FALSE, comment=NA}
+#| warning: false
+#| message: false
+#| label: fig-fig5
+#| fig-cap: "Original data of 2D curvilinear in 4D." 
+
+set.seed(202303003)
+x <- runif(500, 0, 2)
+y <- -(x^3 + runif(500, 0, 3)) + runif(500, 0, 0.5)
+z <- rep(0, 500) + runif(500, -1, 1)
+w <- rep(0, 500) - runif(500, -1, 1)
+
+df_2_n1 <- tibble::tibble(x1 = x, x2 = y, x3 = z, x4 = w)
+
+
+langevitour(df_2_n1)
+```
+
+As shown in @fig-fig6, 2D embedding in PHATE preserves the local structure, while others have misleading results. For example, in TriMAP, 2D curvilinear is not preserved with the default neighborhood value. On the other hand, PaCMAP, UMAP, and t-SNE have the geometry of a 2D curvilinear, although clumpy points mislead the result.
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig6
+#| fig-cap: "2D embedding by t-SNE, UMAP, PHATE, PaCMAP, and TriMAP" 
+
+# ## tSNE
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# tSNE_fit <- df_2_n1 %>%
+#   Rtsne(perplexity = 30)
+# 
+# tSNE_df <- tSNE_fit$Y %>%
+#   as.data.frame()
+# names(tSNE_df) <- c('embedding_1', 'embedding_2')
+# tSNE_df$type <- rep("tSNE", nrow(df_2_n1))
+# 
+# ## UMAP
+# 
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# UMAP_fit <- df_2_n1 %>%
+#   umap(n_neighbors = 15)
+# 
+# UMAP_df <- UMAP_fit$layout %>%
+#   as.data.frame()
+# names(UMAP_df) <- c('embedding_1', 'embedding_2')
+# UMAP_df$type <- rep("UMAP", nrow(df_2_n1))
+# 
+# ## Phate
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# tree_phate_fit <- phate(df_2_n1, 5)
+# 
+# PHATE_df <- as.data.frame(tree_phate_fit$embedding)
+# PHATE_df <- PHATE_df %>% select("PHATE1", "PHATE2")
+# names(PHATE_df) <- c('embedding_1', 'embedding_2')
+# PHATE_df$type <- rep("PHATE", nrow(df_2_n1))
+# 
+# ## TriMAP
+# 
+# source("functions_tri_hex_TriMAP_without_pc.R", local = TRUE)
+# source_python("Fit_TriMAP_code.py")
+# 
+# n_inliers_n <- as.integer(12)
+# n_outliers_n <- as.integer(4)
+# n_random_n <- as.integer(3)
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_TriMAP_data(df_2_n1, tem_dir)
+# 
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+# 
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# 
+# Fit_TriMAP(as.integer(2), n_inliers_n, n_outliers_n, n_random_n, path, path2)
+# 
+# df_TriMAP <- read.csv(path2)
+# names(df_TriMAP) <- c('embedding_1', 'embedding_2')
+# df_TriMAP$type <- rep("TriMAP", nrow(df_2_n1))
+# 
+# 
+# ## PaCMAP
+# source("functions_tri_hex_PaCMAP_without_pc.R", local = TRUE)
+# source_python("Fit_PacMAP_code.py")
+# 
+# knn_n <- as.integer(10)
+# init_n <- "random"
+# MN_ratio_n <- 0.5
+# FP_ratio_n <- 2.0
+# 
+# tem_dir <- tempdir()
+# 
+# Fit_PacMAP_data(df_2_n1, tem_dir)
+# random_num2 <- runif(1, min = 1, max = 10000000)
+# set.seed(random_num2)
+# path <- file.path(tem_dir, "df_2_without_class.csv")
+# path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+# Fit_PaCMAP(as.integer(2), knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+# 
+# df_PaCMAP <- read.csv(path2)
+# names(df_PaCMAP) <- c('embedding_1', 'embedding_2')
+# df_PaCMAP$type <- rep("PaCMAP", nrow(df_2_n1))
+# 
+# expample_3 <- bind_rows(tSNE_df, UMAP_df, PHATE_df, df_TriMAP, df_PaCMAP)
+# expample_3
+# write_csv(expample_3, "Example_3.csv")
+
+example_3 <- read_csv("Example_3.csv")
+
+example_3_with_label <- example_3 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2)) +
+    geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~type, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2")
+
+example_3_with_label
+
+```
+
+So far, you have an idea that the default value of the neighborhood parameter is only sometimes produced better visualization.
+
+## Is it possible to find an effective value for the neighborhood parameter?
+
+[Laurens van der Maaten](https://lvdmaaten.github.io/tsne/) suggested that perplexity values in the range (5 - 50) are appropriate for larger / denser data sets. Let's see the outputs for the simple and complex example defined earlier with different perplexity values.
+
+```{r}
+#| label: fig-fig7
+#| fig-cap: "2D embedding of t-SNE by perplexity."
+#| warning: false
+#| message: false
+
+tSNE_by_perplexity <- data.frame(matrix(ncol = 3, nrow = 0))
+names(tSNE_by_perplexity) <- c("embedding_1", "embedding_2", "perplexity")
+tSNE_by_perplexity$perplexity <- as.character(tSNE_by_perplexity$perplexity)
+                                
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 30, 50, 65)
+                                
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+
+  perplexity <- loop.vector2[i]
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  tSNE_fit <- data_pca %>%
+    Rtsne(perplexity = perplexity)
+
+  tSNE_df <- tSNE_fit$Y %>%
+    as.data.frame()
+  names(tSNE_df) <- c('embedding_1', 'embedding_2')
+  tSNE_df$perplexity <- rep(paste0("Perplexity: ",perplexity),nrow(data_pca))
+  
+  tSNE_by_perplexity <- bind_rows(tSNE_by_perplexity,tSNE_df)
+}
+
+
+plot_tSNE_by_perplexity <- tSNE_by_perplexity %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = rep(df_2$class, 5))) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~perplexity, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity
+```
+
+The two clusters are shown within the range of (5-50) but with different shapes (see @fig-fig7). Outside that range, things get weird when the perplexity value is less than 5. With perplexity 2, local variations dominate.
+
+```{r}
+#| label: fig-fig8
+#| fig-cap: "2D embedding of t-SNE by perplexity."
+#| warning: false
+#| message: false
+
+tSNE_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(tSNE_by_perplexity1) <- c("embedding_1", "embedding_2", "perplexity")
+tSNE_by_perplexity1$perplexity <- as.character(tSNE_by_perplexity1$perplexity)
+                                
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 30, 50, 100, 150)
+                                
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+
+  perplexity <- loop.vector2[i]
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  tSNE_fit <- data_pca_n %>%
+    Rtsne(perplexity = perplexity)
+
+  tSNE_df <- tSNE_fit$Y %>%
+    as.data.frame()
+  names(tSNE_df) <- c('embedding_1', 'embedding_2')
+  tSNE_df$perplexity <- rep(paste0("Perplexity: ",perplexity),nrow(data_pca_n))
+  
+  tSNE_by_perplexity1 <- bind_rows(tSNE_by_perplexity1,tSNE_df)
+}
+
+tSNE_by_perplexity1$perplexity_f = factor(tSNE_by_perplexity1$perplexity, levels=c('Perplexity: 2', 'Perplexity: 5', 'Perplexity: 30', 'Perplexity: 50', 'Perplexity: 100', 'Perplexity: 150'))
+
+plot_tSNE_by_perplexity1 <- tSNE_by_perplexity1 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = rep(df_2_n$class, 6))) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~perplexity_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+The local structure dominates when the perplexity is 2 (see @fig-fig8). On the other hand, even though the perplexity is greater than 100, the five clusters are well-separated. Therefore, the range of perplexity defined by the author can be useful for getting an initial value; an effective value for the perplexity can vary according to the data set.
+
+```{r}
+#| label: fig-fig9
+#| fig-cap: "2D embedding of t-SNE by perplexity."
+#| warning: false
+#| message: false
+
+tSNE_by_perplexity2 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(tSNE_by_perplexity2) <- c("embedding_1", "embedding_2", "perplexity")
+tSNE_by_perplexity2$perplexity <- as.character(tSNE_by_perplexity2$perplexity)
+                                
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 30, 50, 100, 150)
+                                
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+
+  perplexity <- loop.vector2[i]
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  tSNE_fit <- df_2_n1 %>%
+    Rtsne(perplexity = perplexity)
+
+  tSNE_df <- tSNE_fit$Y %>%
+    as.data.frame()
+  names(tSNE_df) <- c('embedding_1', 'embedding_2')
+  tSNE_df$perplexity <- rep(paste0("Perplexity: ",perplexity),nrow(df_2_n1))
+  
+  tSNE_by_perplexity2 <- bind_rows(tSNE_by_perplexity2,tSNE_df)
+}
+
+tSNE_by_perplexity2$perplexity_f = factor(tSNE_by_perplexity2$perplexity, levels=c('Perplexity: 2', 'Perplexity: 5', 'Perplexity: 30', 'Perplexity: 50', 'Perplexity: 100', 'Perplexity: 150'))
+
+plot_tSNE_by_perplexity2 <- tSNE_by_perplexity2 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2)) +
+    geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~perplexity_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity2
+```
+
+You can see in @fig-fig9, except when the perplexity is 30, the shape is not preserved in low-dimensional space.
+
+**Note: For the t-SNE algorithm to operate properly, the perplexity really should be smaller than the number of points.**
+
+### Effective value for perplexity (neighborhood parameter of t-SNE)
+
+According to [Nikolay Oskolkov](https://towardsdatascience.com/how-to-tune-hyperparameters-of-tsne-7c0596a18868#:~:text=The%20optimal%20perplexity%20can%20be%20calculated%20from%20the%20number%20of,data%20points%20of%20~100%20units.), the $\text{Perplexity} ∼ N^{(1/2)}$ where $N$ is the number of observations.
+
+$$
+ \begin{equation}
+    \text{Perplexity} = k * N^{(1/2)}.
+   \label{eq:eq3}
+  \end{equation} 
+$$
+
+In the simplest scenario, we take $k = 1$. The effective values for the example data sets is shown below.
+
++----------------------------+----------------------------+
+| Data set                   | Effective perplexity value |
++============================+============================+
+| Two clusters in a 2D plane |     14.14214               |
++----------------------------+----------------------------+
+| Five clusters in 4D        |     22.36068               |
++----------------------------+----------------------------+
+| 2D curvillinear in 4D      |     22.36068               |
++----------------------------+----------------------------+
+
+: **Table 2: Effective perplexity value for example data sets**
+
+```{r}
+#| warning: false
+#| message: false
+
+
+N1 <- dim(data_pca)[1]
+opt_perplexity1 <- sqrt(N1)
+
+
+N2 <- dim(data_pca_n)[1]
+opt_perplexity2 <- sqrt(N2)
+
+
+N3 <- dim(df_2_n1)[1]
+opt_perplexity3 <- sqrt(N3)
+
+```
+
+Let's visualize and see whether these values are actually effective.
+
+```{r}
+#| label: fig-fig10
+#| fig-cap: "2D embedding of t-SNE for the effetive perplexity value."
+#| warning: false
+#| message: false
+
+                                
+random_num2 <- runif(1, min = 1, max = 10000000)
+set.seed(random_num2)
+tSNE_fit <- data_pca %>%
+  Rtsne(perplexity = opt_perplexity1)
+
+tSNE_df <- tSNE_fit$Y %>%
+  as.data.frame()
+names(tSNE_df) <- c('embedding_1', 'embedding_2')
+
+plot_tSNE_by_effect_perplexity <- tSNE_df %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = df_2$class)) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_effect_perplexity
+```
+
+```{r}
+#| label: fig-fig11
+#| fig-cap: "2D embedding of t-SNE for the effetive perplexity value."
+#| warning: false
+#| message: false
+
+                                
+random_num2 <- runif(1, min = 1, max = 10000000)
+set.seed(random_num2)
+tSNE_fit <- data_pca_n %>%
+  Rtsne(perplexity = opt_perplexity2)
+
+tSNE_df <- tSNE_fit$Y %>%
+  as.data.frame()
+names(tSNE_df) <- c('embedding_1', 'embedding_2')
+
+plot_tSNE_by_effect_perplexity1 <- tSNE_df %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = df_2_n$class)) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_effect_perplexity1
+```
+
+```{r}
+#| label: fig-fig12
+#| fig-cap: "2D embedding of t-SNE for the effetive perplexity value."
+#| warning: false
+#| message: false
+
+                                
+random_num2 <- runif(1, min = 1, max = 10000000)
+set.seed(random_num2)
+tSNE_fit <- df_2_n1 %>%
+  Rtsne(perplexity = opt_perplexity3)
+
+tSNE_df <- tSNE_fit$Y %>%
+  as.data.frame()
+names(tSNE_df) <- c('embedding_1', 'embedding_2')
+
+plot_tSNE_by_effect_perplexity2 <- tSNE_df %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2)) +
+    geom_point() +
+  theme(aspect.ratio = 1) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_effect_perplexity2
+```
+
+Regarding @fig-fig10, @fig-fig11, and @fig-fig12, you can see that these values are not the best, but to begin the analysis, we can use these as initial values. 
+
+The authors do not officially define a method of finding an effective value for the neighborhood parameter in other NLDR techniques. Therefore, we have to visualize and see the best value to consider. 
+
+Let's compare the outputs of other NLDR techniques.
+
+```{r}
+#| label: fig-fig13
+#| fig-cap: "2D embedding of UMAP by n_neighbors."
+#| warning: false
+#| message: false
+
+UMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(UMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+UMAP_by_perplexity1$n_neighbors <- as.character(UMAP_by_perplexity1$n_neighbors)
+                                
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 15, 30, 50, 100)
+                                
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+
+  n_neighbors <- loop.vector2[i]
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  UMAP_fit <- data_pca_n %>%
+    umap(n_neighbors = n_neighbors)
+
+  UMAP_df <- UMAP_fit$layout %>%
+    as.data.frame()
+  names(UMAP_df) <- c('embedding_1', 'embedding_2')
+  UMAP_df$n_neighbors <- rep(paste0("n_neighbors: ", n_neighbors),nrow(data_pca_n))
+  
+  UMAP_by_perplexity1 <- bind_rows(UMAP_by_perplexity1,UMAP_df)
+}
+
+UMAP_by_perplexity1$n_neighbors_f = factor(UMAP_by_perplexity1$n_neighbors, levels=c('n_neighbors: 2', 'n_neighbors: 5', 'n_neighbors: 15', 'n_neighbors: 30', 'n_neighbors: 50', 'n_neighbors: 100'))
+
+plot_tSNE_by_perplexity1 <- UMAP_by_perplexity1 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2, color = rep(df_2_n$class, 6))) +
+    geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~n_neighbors_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+The five clusters are nicely separated except when the number of neighbors is 2 in UMAP (see @fig-fig13). In n-neighbors: 2, the original clusters are divided into small clusters, representing a misleading result. Also, the distance between clusters (change global structure) and the shapes of the clusters vary as the value of n_neighbors increases. 
+
+
+```{r}
+#| label: fig-fig14
+#| fig-cap: "2D embedding of UMAP by n_neighbors."
+#| warning: false
+#| message: false
+
+UMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(UMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+UMAP_by_perplexity1$n_neighbors <- as.character(UMAP_by_perplexity1$n_neighbors)
+                                
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 15, 30, 50, 100)
+                                
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+
+  n_neighbors <- loop.vector2[i]
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  UMAP_fit <- df_2_n1 %>%
+    umap(n_neighbors = n_neighbors)
+
+  UMAP_df <- UMAP_fit$layout %>%
+    as.data.frame()
+  names(UMAP_df) <- c('embedding_1', 'embedding_2')
+  UMAP_df$n_neighbors <- rep(paste0("n_neighbors: ", n_neighbors),nrow(df_2_n1))
+  
+  UMAP_by_perplexity1 <- bind_rows(UMAP_by_perplexity1,UMAP_df)
+}
+
+UMAP_by_perplexity1$n_neighbors_f = factor(UMAP_by_perplexity1$n_neighbors, levels=c('n_neighbors: 2', 'n_neighbors: 5', 'n_neighbors: 15', 'n_neighbors: 30', 'n_neighbors: 50', 'n_neighbors: 100'))
+
+plot_tSNE_by_perplexity1 <- UMAP_by_perplexity1 %>%
+    ggplot(aes(x = embedding_1,
+               y = embedding_2)) +
+    geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~n_neighbors_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+As shown in @fig-fig15, in TriMAP, the local structure dominates when the number of neighbors is 2 and 100. There are some sub-clusters of main clusters.
+
+```{r}
+#| label: fig-fig15
+#| fig-cap: "2D embedding of TriMAP by knn."
+#| warning: false
+#| message: false
+
+TriMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(TriMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+TriMAP_by_perplexity1$n_neighbors <- as.character(TriMAP_by_perplexity1$n_neighbors)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 12, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+  
+  n_inliers_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  source("functions_tri_hex_TriMAP_without_pc.R", local = TRUE)
+  source_python("Fit_TriMAP_code.py")
+  
+  #n_inliers_n <- as.integer(12)
+  n_outliers_n <- as.integer(4)
+  n_random_n <- as.integer(3)
+  
+  tem_dir <- tempdir()
+  
+  Fit_TriMAP_data(data_pca_n, tem_dir)
+  
+  path <- file.path(tem_dir, "df_2_without_class.csv")
+  path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+  
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  
+  Fit_TriMAP(as.integer(2), n_inliers_n, n_outliers_n, n_random_n, path, path2)
+  
+  TriMAP_df <- read.csv(path2)
+  names(TriMAP_df) <- c('embedding_1', 'embedding_2')
+  TriMAP_df$n_inliers <- rep(paste0("n_inliers: ", n_inliers_n),nrow(data_pca_n))
+  
+  TriMAP_by_perplexity1 <- bind_rows(TriMAP_by_perplexity1,TriMAP_df)
+}
+
+TriMAP_by_perplexity1$n_inliers_f = factor(TriMAP_by_perplexity1$n_inliers, levels=c('n_inliers: 2', 'n_inliers: 5', 'n_inliers: 12', 'n_inliers: 30', 'n_inliers: 50', 'n_inliers: 100'))
+
+plot_tSNE_by_perplexity1 <- TriMAP_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2, color = rep(df_2_n$class, 6))) +
+  geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~n_inliers_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+In TriMAP, 2D curvilinear changes from a cheese slice to an umbrella (see @fig-fig16). The local structure is not preserved as expected.
+
+```{r}
+#| label: fig-fig16
+#| fig-cap: "2D embedding of TriMAP by knn."
+#| warning: false
+#| message: false
+
+TriMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(TriMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+TriMAP_by_perplexity1$n_neighbors <- as.character(TriMAP_by_perplexity1$n_neighbors)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 12, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+  
+  n_inliers_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  source("functions_tri_hex_TriMAP_without_pc.R", local = TRUE)
+  source_python("Fit_TriMAP_code.py")
+
+  #n_inliers_n <- as.integer(12)
+  n_outliers_n <- as.integer(4)
+  n_random_n <- as.integer(3)
+
+  tem_dir <- tempdir()
+
+  Fit_TriMAP_data(df_2_n1, tem_dir)
+
+  path <- file.path(tem_dir, "df_2_without_class.csv")
+  path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+
+  Fit_TriMAP(as.integer(2), n_inliers_n, n_outliers_n, n_random_n, path, path2)
+
+  TriMAP_df <- read.csv(path2)
+  names(TriMAP_df) <- c('embedding_1', 'embedding_2')
+  TriMAP_df$n_inliers <- rep(paste0("n_inliers: ", n_inliers_n),nrow(df_2_n1))
+  
+  TriMAP_by_perplexity1 <- bind_rows(TriMAP_by_perplexity1,TriMAP_df)
+}
+
+TriMAP_by_perplexity1$n_inliers_f = factor(TriMAP_by_perplexity1$n_inliers, levels=c('n_inliers: 2', 'n_inliers: 5', 'n_inliers: 12', 'n_inliers: 30', 'n_inliers: 50', 'n_inliers: 100'))
+
+plot_tSNE_by_perplexity1 <- TriMAP_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2)) +
+  geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~n_inliers_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+In PaCMAP, with knn: 2, local variations dominate, dividing each cluster into small clusters (see @fig-fig17). However, when the knn value is greater than 5, the five clusters preserve the global structure, while the shape of the clusters changes a bit.
+
+```{r}
+#| label: fig-fig17
+#| fig-cap: "2D embedding of PaCMAP by n_neighbors."
+#| warning: false
+#| message: false
+
+PaCMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(PaCMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+PaCMAP_by_perplexity1$knn <- as.character(PaCMAP_by_perplexity1$knn)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 10, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+  
+  knn_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  source("functions_tri_hex_PaCMAP_without_pc.R", local = TRUE)
+  source_python("Fit_PacMAP_code.py")
+  
+  init_n <- "random"
+  MN_ratio_n <- 0.5
+  FP_ratio_n <- 2.0
+
+  tem_dir <- tempdir()
+
+  Fit_PacMAP_data(data_pca_n, tem_dir)
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  path <- file.path(tem_dir, "df_2_without_class.csv")
+  path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+  Fit_PaCMAP(as.integer(2), knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+  
+  PaCMAP_df <- read.csv(path2)
+  
+  names(PaCMAP_df) <- c('embedding_1', 'embedding_2')
+  PaCMAP_df$knn <- rep(paste0("knn: ", knn_n),nrow(data_pca_n))
+  
+  PaCMAP_by_perplexity1 <- bind_rows(PaCMAP_by_perplexity1,PaCMAP_df)
+}
+
+PaCMAP_by_perplexity1$knn_f = factor(PaCMAP_by_perplexity1$knn, levels=c('knn: 2', 'knn: 5', 'knn: 10', 'knn: 30', 'knn: 50', 'knn: 100'))
+
+plot_tSNE_by_perplexity1 <- PaCMAP_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2, color = rep(df_2_n$class, 6))) +
+  geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~knn_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+Another surprise...when knn is 2, the 2D curvilinear looks like a tree branch (see @fig-fig18). Also, as the knn value increases, the 2D curvilinear becomes more clumpy, misleading the structure.
+
+```{r}
+#| label: fig-fig18
+#| fig-cap: "2D embedding of PaCMAP by n_neighbors."
+#| warning: false
+#| message: false
+
+PaCMAP_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(PaCMAP_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+PaCMAP_by_perplexity1$knn <- as.character(PaCMAP_by_perplexity1$knn)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 10, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+  
+  knn_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  source("functions_tri_hex_PaCMAP_without_pc.R", local = TRUE)
+  source_python("Fit_PacMAP_code.py")
+  
+  init_n <- "random"
+  MN_ratio_n <- 0.5
+  FP_ratio_n <- 2.0
+  
+  tem_dir <- tempdir()
+  
+  Fit_PacMAP_data(df_2_n1, tem_dir)
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  path <- file.path(tem_dir, "df_2_without_class.csv")
+  path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+  Fit_PaCMAP(as.integer(2), knn_n, init_n, MN_ratio_n, FP_ratio_n, path, path2)
+  
+  PaCMAP_df <- read.csv(path2)
+  
+  names(PaCMAP_df) <- c('embedding_1', 'embedding_2')
+  PaCMAP_df$knn <- rep(paste0("knn: ", knn_n),nrow(df_2_n1))
+  
+  PaCMAP_by_perplexity1 <- bind_rows(PaCMAP_by_perplexity1,PaCMAP_df)
+}
+
+PaCMAP_by_perplexity1$knn_f = factor(PaCMAP_by_perplexity1$knn, levels=c('knn: 2', 'knn: 5', 'knn: 10', 'knn: 30', 'knn: 50', 'knn: 100'))
+
+plot_tSNE_by_perplexity1 <- PaCMAP_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2)) +
+  geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~knn_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+As seen in @fig-fig19, and @fig-fig20, we have a surprising result. After the default neighborhood value (5) of PHATE, the visualizations are the same as the default neighborhood value. 
+
+```{r}
+#| label: fig-fig19
+#| fig-cap: "2D embedding of PHATE by knn."
+#| warning: false
+#| message: false
+
+PHATE_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(PHATE_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+PHATE_by_perplexity1$knn <- as.character(PHATE_by_perplexity1$knn)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 10, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) { # Loop over loop.vector
+  
+  knn_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  
+  tree_phate_fit <- phate(data_pca_n, knn_n)
+  
+  PHATE_df <- as.data.frame(tree_phate_fit$embedding)
+  PHATE_df <- PHATE_df %>% select("PHATE1", "PHATE2")
+  names(PHATE_df) <- c('embedding_1', 'embedding_2')
+  #PHATE_df$type <- rep("PHATE", nrow(df_2_n1))
+
+  names(PHATE_df) <- c('embedding_1', 'embedding_2')
+  PHATE_df$knn <- rep(paste0("knn: ", knn_n),nrow(data_pca_n))
+  
+  PHATE_by_perplexity1 <- bind_rows(PHATE_by_perplexity1,PHATE_df)
+}
+
+PHATE_by_perplexity1$knn_f = factor(PHATE_by_perplexity1$knn, levels=c('knn: 2', 'knn: 5', 'knn: 10', 'knn: 30', 'knn: 50', 'knn: 100'))
+
+plot_tSNE_by_perplexity1 <- PHATE_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2, color = rep(df_2_n$class, 6))) +
+  geom_point() +
+  scale_color_manual(values=c("#1f78b4", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a")) +
+  guides(color = guide_legend(title = "Class")) +
+  theme(aspect.ratio = 1) + facet_wrap(~knn_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+```{r}
+#| label: fig-fig20
+#| fig-cap: "2D embedding of PHATE by knn."
+#| warning: false
+#| message: false
+
+PHATE_by_perplexity1 <- data.frame(matrix(ncol = 3, nrow = 0))
+names(PHATE_by_perplexity1) <- c("embedding_1", "embedding_2", "n_neighbors")
+PHATE_by_perplexity1$knn <- as.character(PHATE_by_perplexity1$knn)
+
+# Create the loop.vector 
+loop.vector2 <- c(2, 5, 10, 30, 50, 100)
+
+for (i in 1:length(loop.vector2)) {  # Loop over loop.vector
+  
+  knn_n <- as.integer(loop.vector2[i])
+  random_num2 <- runif(1, min = 1, max = 10000000)
+  set.seed(random_num2)
+  
+  tree_phate_fit <- phate(df_2_n1, knn_n)
+  
+  PHATE_df <- as.data.frame(tree_phate_fit$embedding)
+  PHATE_df <- PHATE_df %>% select("PHATE1", "PHATE2")
+  names(PHATE_df) <- c('embedding_1', 'embedding_2')
+  #PHATE_df$type <- rep("PHATE", nrow(df_2_n1))
+
+  names(PHATE_df) <- c('embedding_1', 'embedding_2')
+  PHATE_df$knn <- rep(paste0("knn: ", knn_n),nrow(df_2_n1))
+  
+  PHATE_by_perplexity1 <- bind_rows(PHATE_by_perplexity1,PHATE_df)
+
+}
+
+PHATE_by_perplexity1$knn_f = factor(PHATE_by_perplexity1$knn, levels=c('knn: 2', 'knn: 5', 'knn: 10', 'knn: 30', 'knn: 50', 'knn: 100'))
+
+plot_tSNE_by_perplexity1 <- PHATE_by_perplexity1 %>%
+  ggplot(aes(x = embedding_1,
+             y = embedding_2)) +
+  geom_point() +
+  theme(aspect.ratio = 1) + facet_wrap(~knn_f, scales = "free", ncol = 3) + xlab("embedding 1") + ylab("embedding 2") 
+
+plot_tSNE_by_perplexity1
+```
+
+## Conclusion
+
+The effective value of the neighborhood parameter depends on the data set. Therefore, we must choose the most effective one by evaluating the outputs for different neighborhood parameter values. 

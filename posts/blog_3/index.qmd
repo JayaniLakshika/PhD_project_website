@@ -58,33 +58,33 @@ Generally, most dimension reduction techniques allow the reduction of high-dimen
 
 Dimension reduction tools for visualization can be categorized as follows.
 
-+--------------------------------------------------+-----------------------------------------------------+
-| Linear dimensionality reduction                  | Non-linear dimensionality reduction                 |
-|                                                  |                                                     |
-| techniques                                       | techniques (Manifold learning)                      |
-+==================================================+=====================================================+
-| -   Principal Component Analysis (PCA)           | -   t-distributed stochastic neighbor               |
-|                                                  |                                                     |
-|                                                  |     embedding (tSNE)                                |
-+--------------------------------------------------+-----------------------------------------------------+
-| -   Linear Discriminant Analysis (LDA)           | -   Uniform Manifold Approximation and              |
-|                                                  |                                                     |
-|                                                  |     Projection (UMAP)                               |
-+--------------------------------------------------+-----------------------------------------------------+
-| -   Multidimensional Scaling (MDS)               | -   Potential of Heat-diffusion for Affinity-based  |
-|                                                  |                                                     |
-|                                                  |     Trajectory Embedding (PHATE)                    |
-+--------------------------------------------------+-----------------------------------------------------+
-| -   Factorial Analysis (FA)                      | -   Large-scale Dimensionality Reduction            |
-|                                                  |                                                     |
-|                                                  |     Using Triplets (TriMAP)                         |
-+--------------------------------------------------+-----------------------------------------------------+
-| -   Truncated Singular Value Decomposition (SVD) | -   Pairwise Controlled Manifold                    |
-|                                                  |                                                     |
-|                                                  |     Approximation (PaCMAP)                          |
-+--------------------------------------------------+-----------------------------------------------------+
-| -   Generalized discriminant analysis (GDA)      | -   Auto Encoder (AE)                               |
-+--------------------------------------------------+-----------------------------------------------------+
++--------------------------------------------------+----------------------------------------------------+
+| Linear dimensionality reduction                  | Non-linear dimensionality reduction                |
+|                                                  |                                                    |
+| techniques                                       | techniques (Manifold learning)                     |
++==================================================+====================================================+
+| -   Principal Component Analysis (PCA)           | -   t-distributed stochastic neighbor              |
+|                                                  |                                                    |
+|                                                  |     embedding (tSNE)                               |
++--------------------------------------------------+----------------------------------------------------+
+| -   Linear Discriminant Analysis (LDA)           | -   Uniform Manifold Approximation and             |
+|                                                  |                                                    |
+|                                                  |     Projection (UMAP)                              |
++--------------------------------------------------+----------------------------------------------------+
+| -   Multidimensional Scaling (MDS)               | -   Potential of Heat-diffusion for Affinity-based |
+|                                                  |                                                    |
+|                                                  |     Trajectory Embedding (PHATE)                   |
++--------------------------------------------------+----------------------------------------------------+
+| -   Factorial Analysis (FA)                      | -   Large-scale Dimensionality Reduction           |
+|                                                  |                                                    |
+|                                                  |     Using Triplets (TriMAP)                        |
++--------------------------------------------------+----------------------------------------------------+
+| -   Truncated Singular Value Decomposition (SVD) | -   Pairwise Controlled Manifold                   |
+|                                                  |                                                    |
+|                                                  |     Approximation (PaCMAP)                         |
++--------------------------------------------------+----------------------------------------------------+
+| -   Generalized discriminant analysis (GDA)      | -   Auto Encoder (AE)                              |
++--------------------------------------------------+----------------------------------------------------+
 
 The high variance directions reflect the key trends in the data set in a **linear dimensionality reduction technique**. For example, a new axis is linear and may be non-orthogonal [@article1]. In contrast, **non-linear dimensionality reduction** utilizes non-linear kernels to locate key data set trends while preserving the original data's local and global structure (neighborhood relation). In terms of preserving the local and global structure, the distance or distance ranks between data points in the original space should be preserved after reducing the dimensions to low-dimensional space.
 

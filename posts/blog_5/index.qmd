@@ -1,0 +1,79 @@
+---
+title: "How to find an effective value for the number of bins partitioning the range of x-axis?"
+date: "2023-02-25"
+author: Jayani P.G. Lakshika
+categories:
+  - Parameters
+format:
+  html:
+    code-fold: true
+editor: visual
+image: feature.png
+---
+
+How to find an effective value for the number of bins partitioning the range of the x-axis?
+
+In this blog, I will explore hexagonal binning and define a workflow to find an effective value for the number of bins along the x-axis. Regarding dimensionality reduction techniques, the x-axis means the first embedding or the first dimensionality reduction component.
+
+## Hexagonal binning
+
+## Example
+
+A simulated dataset is generated to obtain a $2-d$ plane in $4-d$ with little noise in third and fourth dimensions.
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+library(readr)
+library(langevitour)
+library(dplyr)
+library(Rtsne)
+library(umap)
+library(phateR)
+library(ggplot2)
+library(patchwork)
+library(reticulate)
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig1
+#| fig-cap: "Visualization of the simulated dataset to obtain a  $2-d$ plane in  $4-d$." 
+
+random_num1 <- runif(1, min = 1, max = 10000000)
+set.seed(random_num1)
+u <- runif(1000, min = 10, max = 30)
+v <- runif(1000, min = 10, max = 20)
+x <- u + v - 10
+y <- v - u + 8
+z <- rep(0, 1000) + runif(1000, 0, 1)
+w <- rep(0, 1000) - runif(1000, 0, 1)
+
+df_2 <- tibble::tibble(x1 = x, x2 = y, x3 = z, x4 = w) 
+
+langevitour(df_2)
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| label: fig-fig2
+#| fig-cap: "Visualization by bin size" 
+
+# plot_list <- list()
+# 
+# # Create the loop.vector 
+# loop_vector <- c(5, 10, 30, 40, 50, 80)
+# 
+# for(i in c(1:6))
+# { # Loop over loop.vector
+#   num_bins <- loop_vector[i] 
+#   plot_list[[i]] <- draw_hex_bin(tSNE_df, num_bins) + ggtitle(paste0("No. of bins: ", num_bins))+ 
+#     theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5)) + theme(legend.position = "none")
+# }
+# plot_grob <- arrangeGrob(grobs=plot_list, ncol = 3)
+# grid.arrange(plot_grob)
+```
